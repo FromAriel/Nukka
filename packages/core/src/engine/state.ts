@@ -156,6 +156,15 @@ export interface GameState {
   actionQueue: QueuedAction[];
   /** The event chain or proposal being resolved, if any. */
   chain: Chain | null;
+  /** Operations declared this round, fought in the shared combat window. */
+  operations: DeclaredOperation[];
+  /** Nuclear plans committed for this round's window (drafts live in clients). */
+  nuclearPlans: Record<PlayerId, NuclearPlan[]>;
+  defensePolicies: Record<PlayerId, 'protectCivilians' | 'preserveRetaliation' | 'balanced'>;
+  /** How far the crisis step has got this round. */
+  crisisStage: 'vote' | 'honor' | 'commit' | 'done';
+  /** Honor calls owed this round: ally → attacked partner → aggressor. */
+  honorCalls: { ally: PlayerId; partner: PlayerId; aggressor: PlayerId }[];
   covert: {
     operations: CovertOperation[];
     countermeasures: { id: string; owner: PlayerId; card: string; untilRound: number }[];
@@ -169,7 +178,8 @@ export interface GameState {
   result: MatchResult | null;
 }
 
-export type DecisionKind = 'planning' | 'crisis-vote' | 'reaction' | 'choice' | 'proposal';
+export type DecisionKind =
+  'planning' | 'crisis-vote' | 'reaction' | 'choice' | 'proposal' | 'honor' | 'commit';
 export type CrisisVote = 'authorize' | 'hold';
 
 export interface PendingDecision {
@@ -285,7 +295,49 @@ export interface LoadOrder {
 export type MainAction =
   | { type: 'pass' }
   | { type: 'card'; card: string; target?: string; params?: CardParams }
-  | { type: 'proposal'; proposal: ProposalKind; target?: PlayerId; second?: PlayerId };
+  | { type: 'proposal'; proposal: ProposalKind; target?: PlayerId; second?: PlayerId }
+  | {
+      type: 'operation';
+      operation: OperationKind;
+      target: string;
+      forces?: ForceCommit[];
+      launchers?: string[];
+    };
+
+export type OperationKind =
+  'groundAssault' | 'airRaid' | 'missileRaid' | 'interdiction' | 'subHunt';
+
+export interface ForceCommit {
+  stack: string;
+  count: number;
+}
+
+export interface DeclaredOperation {
+  id: string;
+  kind: OperationKind;
+  attacker: PlayerId;
+  /** Territory, installation, `lane:<a>|<b>` or a unit stack id. */
+  target: string;
+  /** The territory the target is in (for lanes, the first end). */
+  territory: string;
+  defender: PlayerId | null;
+  forces: ForceCommit[];
+  launchers: string[];
+}
+
+export interface NuclearPlan {
+  id: string;
+  /** Silo installation id, or a submarine or bomber stack id. */
+  delivery: string;
+  count: number;
+  /** Installation or territory id. */
+  target: string;
+  fallback: string | null;
+  wave: number;
+  policy: 'scheduled' | 'retaliation';
+  /** For retaliation: the player whose confirmed nuclear attack on us triggers it. */
+  trigger: PlayerId | null;
+}
 
 export type ShadowMarker =
   | { type: 'blank' }

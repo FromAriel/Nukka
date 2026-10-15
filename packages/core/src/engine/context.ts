@@ -3,6 +3,7 @@ import type { DeckDef } from '../data/cards.js';
 import type { MapDef, SeaZoneDef, TerritoryDef } from '../data/map.js';
 import type { InstallationRules, Ruleset } from '../data/ruleset.js';
 import type { ScenarioDef } from '../data/scenario.js';
+import type { CombatResolver } from './combat-interface.js';
 
 /** Static, read-only match data shared by every engine step. Never part of GameState. */
 export interface MatchContext {
@@ -13,6 +14,8 @@ export interface MatchContext {
   readonly territories: ReadonlyMap<string, TerritoryDef>;
   readonly seaZones: ReadonlyMap<string, SeaZoneDef>;
   readonly territoryIds: readonly string[];
+  /** Resolves combat windows; supplied by the harness or client (Technical Architecture spec §12). */
+  readonly combat: CombatResolver | null;
 }
 
 export function createContext(
@@ -20,6 +23,7 @@ export function createContext(
   map: MapDef,
   deck: DeckDef,
   scenario: ScenarioDef,
+  combat: CombatResolver | null = null,
 ): MatchContext {
   return {
     ruleset,
@@ -29,6 +33,7 @@ export function createContext(
     territories: new Map(map.territories.map((t) => [t.id, t])),
     seaZones: new Map(map.seaZones.map((s) => [s.id, s])),
     territoryIds: sortedIds(map.territories.map((t) => t.id)),
+    combat,
   };
 }
 

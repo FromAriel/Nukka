@@ -16,6 +16,7 @@ import {
 } from './diplomacy.js';
 import { NO_ADJUSTMENTS, applyEffects, safeOption, type ChainAdjustments } from './effects.js';
 import type { EventSink } from './events.js';
+import { declareOperation } from './operations.js';
 import { newId } from './setup.js';
 import { changeBlame, changeTension } from './tension.js';
 import type {
@@ -51,6 +52,9 @@ function beginAction(
   if (!state.players[player]?.viable) return;
   switch (action.type) {
     case 'pass':
+      return;
+    case 'operation':
+      declareOperation(ctx, state, events, player, action);
       return;
     case 'card': {
       const card = cardDef(ctx, action.card);

@@ -21,6 +21,7 @@ import {
   treatiesBetween,
 } from './diplomacy.js';
 import { modifierTotal } from './modifiers.js';
+import { operationProblems } from './operations.js';
 import type { EventSink } from './events.js';
 import { addInstallation, addUnits } from './setup.js';
 import { changeTension } from './tension.js';
@@ -348,6 +349,7 @@ export function validatePlanning(
     );
   else if (main.type === 'proposal')
     problems.push(...proposalProblems(state, player, main).map((m) => `main: ${m}`));
+  else if (main.type === 'operation') problems.push(...operationProblems(ctx, state, player, main));
 
   const sent = new Map<string, number>();
   for (const trade of orders.trades) {

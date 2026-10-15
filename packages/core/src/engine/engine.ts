@@ -7,7 +7,14 @@ import { checkSeq, type CommandEnvelope } from '../commands.js';
 import { cardDef, reactionLegal } from './cards.js';
 import type { MatchContext } from './context.js';
 import { runIntelligence } from './covert.js';
+import type { CombatInput } from './combat-interface.js';
 import { crisisCheck, resolveCrisisVote } from './crisis.js';
+import {
+  answerHonorCall,
+  applyCombatResult,
+  hasNuclearDelivery,
+  nuclearPlanProblems,
+} from './operations.js';
 import { safeOption } from './effects.js';
 import type { EventSink, GameEvent } from './events.js';
 import { applyReaction, legalReactions, runEvents } from './events-phase.js';
@@ -15,6 +22,7 @@ import { resolvePlanning, validatePlanning } from './planning.js';
 import { scoreFor } from './score.js';
 import {
   type CrisisVote,
+  type NuclearPlan,
   PASS_ORDERS,
   type GameState,
   type PendingDecision,
@@ -28,7 +36,9 @@ export type Command =
   | { type: 'CastCrisisVote'; vote: CrisisVote }
   | { type: 'React'; card: string | null }
   | { type: 'Choose'; option: string }
-  | { type: 'AnswerProposal'; accept: boolean };
+  | { type: 'AnswerProposal'; accept: boolean }
+  | { type: 'AnswerHonorCall'; honor: boolean }
+  | { type: 'CommitNuclear'; plans: NuclearPlan[] };
 
 export type SubmitResult =
   | { ok: true; state: GameState; events: GameEvent[] }
@@ -51,6 +61,10 @@ export function defaultCommand(decision: PendingDecision): Command {
       return { type: 'Choose', option: safeOption((decision.options ?? []).map((id) => ({ id }))) };
     case 'proposal':
       return { type: 'AnswerProposal', accept: false };
+    case 'honor':
+      return { type: 'AnswerHonorCall', honor: false };
+    case 'commit':
+      return { type: 'CommitNuclear', plans: [] };
   }
 }
 
@@ -96,7 +110,7 @@ export function submit(
   const events: GameEvent[] = [];
   next.lastSeq[envelope.playerId] = envelope.seq;
   next.decisions = next.decisions.filter((d) => d.player !== envelope.playerId);
-  apply(next, events, envelope.playerId, cmd);
+  apply(ctx, next, events, envelope.playerId, cmd);
   if (next.decisions.length === 0) runUntilDecision(ctx, next, events);
   return { ok: true, state: next, events };
 }
@@ -143,10 +157,21 @@ function validate(
         : [`option must be one of ${(decision.options ?? []).join(', ')}`];
     case 'AnswerProposal':
       return decision.kind === 'proposal' ? [] : expected(decision);
+    case 'AnswerHonorCall':
+      return decision.kind === 'honor' ? [] : expected(decision);
+    case 'CommitNuclear':
+      if (decision.kind !== 'commit') return expected(decision);
+      return nuclearPlanProblems(ctx, state, player, cmd.plans);
   }
 }
 
-function apply(state: GameState, events: EventSink, player: PlayerId, cmd: Command): void {
+function apply(
+  ctx: MatchContext,
+  state: GameState,
+  events: EventSink,
+  player: PlayerId,
+  cmd: Command,
+): void {
   switch (cmd.type) {
     case 'SubmitPlanning':
       state.planningOrders[player] = structuredClone(cmd.orders);
@@ -172,6 +197,15 @@ function apply(state: GameState, events: EventSink, player: PlayerId, cmd: Comma
     case 'AnswerProposal':
       if (state.chain) state.chain.answers[player] = cmd.accept ? 'accept' : 'decline';
       return;
+    case 'AnswerHonorCall':
+      answerHonorCall(ctx, state, events, player, cmd.honor);
+      return;
+    case 'CommitNuclear':
+      state.nuclearPlans[player] = cmd.plans.map((plan, i) => ({
+        ...structuredClone(plan),
+        id: `${player}-n${state.round}-${i}`,
+      }));
+      return;
   }
 }
 
@@ -195,7 +229,7 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
         if (runCrisis(ctx, state, events)) state.phase = 'combat';
         break;
       case 'combat':
-        // The shared combat window (step 6).
+        runCombat(ctx, state, events);
         state.phase = 'aftermath';
         break;
       case 'aftermath':
@@ -212,27 +246,84 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
 
 /** Returns true when the crisis step is finished; false while waiting for votes. */
 function runCrisis(ctx: MatchContext, state: GameState, events: EventSink): boolean {
-  const check = crisisCheck(ctx, state);
-  if (check === 'vote') {
-    const voted = state.playerIds
-      .filter((id) => state.players[id]?.viable)
-      .every((id) => state.crisisVotes[id] !== undefined);
-    if (!voted) {
-      openDecisions(state, 'crisis-vote');
-      events.push({ type: 'CrisisVoteCalled', visibility: 'public', tension: state.tension.value });
+  if (state.crisisStage === 'vote') {
+    const check = crisisCheck(ctx, state);
+    if (check === 'vote') {
+      const voted = state.playerIds
+        .filter((id) => state.players[id]?.viable)
+        .every((id) => state.crisisVotes[id] !== undefined);
+      if (!voted) {
+        openDecisions(state, 'crisis-vote');
+        events.push({
+          type: 'CrisisVoteCalled',
+          visibility: 'public',
+          tension: state.tension.value,
+        });
+        return false;
+      }
+      resolveCrisisVote(ctx, state, events);
+    } else if (check !== 'aftermath') {
+      state.tension.release = check === 'open' ? 'open' : 'locked';
+      events.push({
+        type: 'ReleaseDecided',
+        visibility: 'public',
+        release: state.tension.release,
+        authorizers: [],
+      });
+    }
+    state.crisisStage = 'honor';
+  }
+  if (state.crisisStage === 'honor') {
+    state.crisisStage = 'commit';
+    const allies = [...new Set(state.honorCalls.map((c) => c.ally))].sort();
+    if (allies.length > 0) {
+      state.decisions = allies.map((player) => ({ player, kind: 'honor' as const }));
       return false;
     }
-    resolveCrisisVote(ctx, state, events);
-  } else if (check !== 'aftermath') {
-    state.tension.release = check === 'open' ? 'open' : 'locked';
-    events.push({
-      type: 'ReleaseDecided',
-      visibility: 'public',
-      release: state.tension.release,
-      authorizers: [],
-    });
+  }
+  if (state.crisisStage === 'commit') {
+    state.crisisStage = 'done';
+    const releaseOpen = state.tension.release === 'open' || state.tension.release === 'aftermath';
+    const committers = releaseOpen
+      ? state.playerIds.filter((id) => state.players[id]?.viable && hasNuclearDelivery(state, id))
+      : [];
+    if (committers.length > 0) {
+      state.decisions = committers.map((player) => ({ player, kind: 'commit' as const }));
+      return false;
+    }
   }
   return true;
+}
+
+/** The shared combat window: one resolver call for every operation and committed plan. */
+function runCombat(ctx: MatchContext, state: GameState, events: EventSink): void {
+  const planCount = state.playerIds.reduce(
+    (sum, id) => sum + (state.nuclearPlans[id]?.length ?? 0),
+    0,
+  );
+  if (state.operations.length > 0 || planCount > 0) {
+    if (!ctx.combat) throw new Error('combat is needed but no combat resolver was supplied');
+    const input: CombatInput = {
+      round: state.round,
+      kind: planCount > 0 ? 'nuclear' : 'conventional',
+      operations: structuredClone(state.operations),
+      plans: structuredClone(state.nuclearPlans),
+      policies: Object.fromEntries(
+        state.playerIds.map((id) => [id, state.defensePolicies[id] ?? 'balanced']),
+      ),
+    };
+    events.push({
+      type: 'CombatStarted',
+      visibility: 'public',
+      kind: input.kind,
+      operations: input.operations.length,
+    });
+    applyCombatResult(ctx, state, events, ctx.combat(ctx, state, input));
+  }
+  state.operations = [];
+  state.nuclearPlans = {};
+  state.honorCalls = [];
+  state.crisisStage = 'vote';
 }
 
 function runAftermath(ctx: MatchContext, state: GameState, events: EventSink): void {

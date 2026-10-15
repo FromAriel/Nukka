@@ -1,4 +1,4 @@
-import { createMatch, type MatchContext, type GameState } from '@nukka/core';
+import { createMatch, type CombatResolver, type MatchContext, type GameState } from '@nukka/core';
 import { loadDeck, loadMap, loadRuleset, loadScenario } from './data.js';
 
 export interface MatchOptions {
@@ -6,6 +6,7 @@ export interface MatchOptions {
   readonly seed?: number;
   readonly scenario?: string;
   readonly ruleset?: string;
+  readonly combat?: CombatResolver;
 }
 
 /** Creates a match from the standard data, for tests and the harness. */
@@ -20,5 +21,6 @@ export function standardMatch(options: MatchOptions = {}): { ctx: MatchContext; 
     map,
     deck: loadDeck('base-0.1'),
     scenario: loadScenario(options.scenario ?? 'cold-start', ruleset, map),
+    ...(options.combat ? { combat: options.combat } : {}),
   });
 }

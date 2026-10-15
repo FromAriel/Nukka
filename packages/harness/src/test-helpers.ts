@@ -3,6 +3,7 @@ import {
   defaultCommand,
   startMatch,
   submit,
+  type CombatResolver,
   type Command,
   type GameEvent,
   type GameState,
@@ -54,11 +55,12 @@ export function round(
 
 export function match(
   hands: Record<string, string[]>,
-  options: { scenario?: string; tension?: number; seed?: number } = {},
+  options: { scenario?: string; tension?: number; seed?: number; combat?: CombatResolver } = {},
 ) {
   const { ctx, state } = standardMatch({
     ...(options.scenario ? { scenario: options.scenario } : {}),
     ...(options.seed ? { seed: options.seed } : {}),
+    ...(options.combat ? { combat: options.combat } : {}),
   });
   for (const [id, hand] of Object.entries(hands)) state.players[id]!.hand = [...hand];
   for (const id of state.playerIds) if (!hands[id]) state.players[id]!.hand = [];

@@ -6,6 +6,7 @@ import type { DeckDef } from '../data/cards.js';
 import type { MapDef } from '../data/map.js';
 import type { Ruleset } from '../data/ruleset.js';
 import type { ScenarioDef } from '../data/scenario.js';
+import type { CombatResolver } from './combat-interface.js';
 import { shuffleWith } from './random.js';
 import { settleTension } from './tension.js';
 import { pairKey, type GameState, type Installation, type PlayerId } from './state.js';
@@ -20,12 +21,13 @@ export interface MatchConfig {
   readonly map: MapDef;
   readonly deck: DeckDef;
   readonly scenario: ScenarioDef;
+  readonly combat?: CombatResolver;
 }
 
 /** Builds the opening state: round 1, at planning (Technical Architecture spec §7). */
 export function createMatch(config: MatchConfig): { ctx: MatchContext; state: GameState } {
   const { ruleset, map, deck, scenario } = config;
-  const ctx = createContext(ruleset, map, deck, scenario);
+  const ctx = createContext(ruleset, map, deck, scenario, config.combat ?? null);
   const setup = map.playerCounts[String(config.players)];
   if (!setup) throw new Error(`map ${map.id} has no setup for ${config.players} players`);
   const { min, max } = ruleset.match.players;
@@ -71,6 +73,11 @@ export function createMatch(config: MatchConfig): { ctx: MatchContext; state: Ga
     reveals: [],
     actionQueue: [],
     chain: null,
+    operations: [],
+    nuclearPlans: {},
+    defensePolicies: {},
+    crisisStage: 'vote',
+    honorCalls: [],
     covert: { operations: [], countermeasures: [], history: [] },
     lastSeq: {},
     result: null,
