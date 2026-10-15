@@ -16,8 +16,11 @@
     "gen:maps": "tsx src/maps/generate.ts"
   },
   "dependencies": {
-    "@nukka/core": "workspace:*",
+    "@nukka/ai": "workspace:*",
     "@nukka/combat": "workspace:*",
-    "@nukka/ai": "workspace:*"
+    "@nukka/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
   }
 }

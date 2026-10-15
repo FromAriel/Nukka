@@ -10,7 +10,7 @@ Technical Architecture spec there is the source of truth for code structure.
 - `pnpm test` / `pnpm test:watch` — Vitest across all packages
 - `pnpm lint`, `pnpm typecheck`, `pnpm format`
 - `pnpm smoke` — headless harness smoke run (also loads all game data)
-- `pnpm sim -- --matches 100 --bots builder,expansionist,defender,brinkman --out results/run` — bot match batches (see `packages/harness/src/cli.ts` for `--patch`, `--sweep`, `--players`, `--scenario`)
+- `pnpm sim --matches 100 --bots builder,expansionist,defender,brinkman --out results/run` — bot match batches (see `packages/harness/src/cli.ts` for `--patch`, `--sweep`, `--players`, `--scenario`)
 - `pnpm gen:maps` — regenerate `data/maps/` from the generators in `packages/harness/src/maps/`
 
 Run `pnpm check` before every commit.

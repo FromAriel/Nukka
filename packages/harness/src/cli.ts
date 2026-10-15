@@ -73,7 +73,10 @@ function parseArgs(argv: readonly string[]): Options {
         options.scenario = value();
         break;
       case '--bots':
-        options.bots = value().split(',');
+        // PowerShell turns a,b,c into separate words, so accept spaces too.
+        options.bots = value()
+          .split(/[\s,]+/)
+          .filter(Boolean);
         break;
       case '--players':
         options.players = Number(value());
@@ -90,7 +93,13 @@ function parseArgs(argv: readonly string[]): Options {
       case '--sweep': {
         const [key, list] = value().split('=');
         if (!key || !list) throw new Error('--sweep expects key=v1,v2');
-        options.sweep = { key, values: list.split(',').map(Number) };
+        options.sweep = {
+          key,
+          values: list
+            .split(/[\s,]+/)
+            .filter(Boolean)
+            .map(Number),
+        };
         break;
       }
       case '--smoke':
