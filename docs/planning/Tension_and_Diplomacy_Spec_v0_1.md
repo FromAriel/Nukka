@@ -149,6 +149,7 @@ A player with current blame of **10 or more** is a **pariah** until their blame 
 - AI players strongly prioritize a pariah as a target and readily join coalitions against them.
 - Any player may declare war on a pariah at **+4 tension and no blame**, the same rate as an honor call (§5.4).
 - Cards may require a pariah target (for example, *Global Embargo*).
+- Treaties with a pariah do **not** end automatically. But any partner may leave a treaty with a pariah at any time with **no breach penalty, and loses 1 blame** for doing so. Leaving takes no action and can happen at any decision point outside combat.
 
 A first nuclear launch (+8 blame) plus almost any other aggression makes the launcher a pariah.
 
@@ -212,7 +213,7 @@ Being able to see an opponent's breakdown matters because it supports bluffing: 
 
 ### 6.1 Submarines and patrols
 
-Submarines are the hardest nuclear asset to find, which is why they count as much as a silo. Their counter is a **patrol group**, a generic naval unit that stands for the whole anti-submarine effort: ships, trawlers, helicopters and spy satellites.
+Submarines are the hardest nuclear asset to find, which is why they count as much as a silo. Their counter is a **patrol group**: a generic naval detector that stands for the whole surveillance effort of ships, trawlers, helicopters and spy satellites. Patrols detect everything in range, not just submarines.
 
 **Submarines:**
 - Live in sea zones (§12). Their positions are hidden from other players.
@@ -221,12 +222,13 @@ Submarines are the hardest nuclear asset to find, which is why they count as muc
 
 **Patrol groups:**
 - Deployed to a sea zone next to one of your coastal territories by a development order. They move one sea zone per repositioning order.
-- See their own sea zone and every adjacent sea zone. Any submarine inside that range is revealed to the patrol's owner, and to defensive-agreement partners.
+- See their own sea zone and every adjacent sea zone. Everything inside that range is revealed to the patrol's owner and to defensive-agreement partners: submarines, surface ships, other patrols, and aircraft passing over the sea.
+- Act as forward radar in combat. Threats crossing a patrol's range are detected early, giving the same earlier warnings and better prediction aids as a radar installation (main design §6). Losing a patrol mid-combat removes that warning.
 - Can attack a revealed submarine with a **sub hunt** operation, which follows the normal rules for conventional operations (including declaring war if needed). In combat, the patrol engages the submarine like any other target. A destroyed submarine loses any missiles it had not launched.
 - Have no nuclear posture and cause no tension spike to build.
-- Are vulnerable to aircraft and missile raids. Losing patrols opens gaps for submarines to slip through.
+- Are vulnerable to aircraft and missile raids. Losing patrols opens gaps for submarines and incoming bombers to slip through.
 
-The base game includes patrols in this simple form, once sea zones are added to the map. Richer anti-submarine warfare (sonar types, decoys, separate satellite coverage) belongs in a later module.
+The base game includes patrols in this simple form, once sea zones are added to the map. Detection uses one general rule throughout: a unit or installation with a vision range reveals hidden units inside it. Land radar and patrols are two sources under the same rule. Richer anti-submarine warfare (sonar types, decoys, separate satellite coverage) belongs in a later module.
 
 ## 7. Nuclear release
 
@@ -247,7 +249,7 @@ Release is opened **for the coming combat window only** and is checked again eve
 - **Eligible voters:** every player with a viable country.
 - **Voting:** simultaneous and secret, then all votes are revealed together. Each Authorize vote adds +1 blame.
 - **Threshold:** strictly more than half of eligible voters. With 3 or 4 players, **ties fail**.
-- **Two-player games:** if both authorize, release opens. If both hold, it stays locked. If they split, **a coin flip decides**, using the match's seeded random number generator so it shows up in replays. The flip is shown on screen and logged. The player who voted Authorize still takes the +1 blame either way.
+- **Two-player games:** if both authorize, release opens. If both hold, it stays locked. If they split, **a roll-off decides**. Each player rolls a d6, and the higher roll wins: if the Authorize voter wins, release opens; if the Hold voter wins, it stays locked. **The player with more infamy rolls twice and keeps the lower result.** With equal infamy, both roll once. Ties are rerolled. Rolls use the match's seeded random number generator, so they are reproduced in replays, and they are shown on screen and logged. The player who voted Authorize still takes the +1 blame either way.
 - **Disconnected or timed-out players vote Hold.** A disconnect never creates authorization.
 - **AI** players vote according to their personality weights and current threats.
 
@@ -305,9 +307,10 @@ At the crisis check, tension is 86, so a vote is held. Aster and Cinder authoriz
 - Building and dismantling update both the spike and the floor, and T never falls below F.
 - The floor never exceeds the scenario cap (default 90). It can reach the crisis vote band by itself but never 100.
 - A canceled aggressive card still applies its printed tension.
-- Disconnected players never authorize release. In games of 3 or 4, ties fail. In 2-player games, a split vote is decided by a seeded coin flip that is reproduced exactly in replays.
+- Disconnected players never authorize release. In games of 3 or 4, ties fail. In 2-player games, a split vote is decided by a seeded roll-off that is reproduced exactly in replays, and the higher-infamy player always rolls twice and keeps the lower.
 - Infamy never decreases except through mediation, and the infamy penalty appears in the score preview.
-- Undetected submarines can't be targeted. A submarine inside a patrol's range is revealed only to that patrol's owner and their defensive partners.
+- Undetected submarines can't be targeted. Units inside a patrol's range are revealed only to that patrol's owner and their defensive partners.
+- Leaving a treaty with a pariah never applies breach penalties, and gives exactly −1 blame per treaty left.
 - Release reverts to locked when T drops below 80 and no launch has occurred.
 - After the first launch, release stays available and ceasefires still block launches between signatories.
 - Every tension change appears in the log with a source and an amount.
@@ -320,12 +323,13 @@ At the crisis check, tension is 86, so a vote is held. Aster and Cinder authoriz
 | Floor cap | Raised to 90 and made a scenario setting. An arms race can reach the crisis band by itself. |
 | Public posture | Shown as a band; exact PP on hover. |
 | Mediation reward | Peace Broker token (+3 score), 2 cards, and −3 blame and infamy. |
-| Anti-submarine counter | A generic patrol group with a vision range, in simple form in the base game (§6.1). |
-| 2-player crisis vote | A split vote is settled by a seeded coin flip. |
+| Infamy penalty size | −1 per 3 infamy for now; tune in playtests. |
+| Pariah alliances | Don't end automatically. Partners may leave without penalty and lose 1 blame (§4.2). |
+| Anti-submarine counter | A patrol group in simple form in the base game. It is a general detector: it sees submarines, ships and aircraft in range and acts as forward radar (§6.1). |
+| 2-player crisis vote | A split vote goes to a d6 roll-off; the higher-infamy player rolls twice and keeps the lower (§7.2). |
 
 ## 15. Open questions
 
-1. Is −1 score per 3 infamy the right size of penalty? It needs testing against the value of a last-round launch.
-2. Should a pariah's own defensive agreements automatically lapse, or should partners have to choose?
-3. Should patrol vision also reveal surface units and bombers in transit over the sea, or only submarines?
-4. Does a 2-player coin flip feel fair, or should the player with less infamy win split votes instead?
+1. What rate of infamy penalty feels right? Measure it against the value of a last-round launch.
+2. Can players leave a pariah treaty, let the pariah status lapse, and then sign again for an extra benefit? If testing shows abuse, add a cooldown before re-signing.
+3. Should land radar installations also use vision ranges on the map, so the same detection rule covers both land and sea?
