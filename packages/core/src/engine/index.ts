@@ -20,3 +20,4 @@ export * from './state.js';
 export * from './tension.js';
 export * from './upkeep.js';
 export * from './viability.js';
+export * from './views.js';
