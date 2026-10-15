@@ -21,22 +21,41 @@ Covert operations no longer use main actions or reaction chains. During planning
 
 **Intelligence (IP)** is a sixth economic measure, alongside production, food, water, power and supplies (main design §2).
 
-| Source | IP per upkeep |
+| Source | Per upkeep |
 |---|---|
-| Command installation (operational) | +1 |
-| **Intelligence bureau** (new installation; uses a development site; needs power) | +2 |
+| Every government (baseline) | +2 IP |
+| Command installation (operational) | +1 IP |
+| **Intelligence bureau** in **Foreign** mode | +2 IP |
+| **Intelligence bureau** in **Domestic** mode | +3 free CI each round (§6.1), no IP |
 
-- Your IP reserve is capped at **8**. Anything above that is lost.
-- Each player's IP reserve is **hidden**. Bureaus are visible on the board, so opponents can estimate how much a player earns but not how much they've saved.
-- A damaged command installation or bureau produces nothing that upkeep. Bombing a rival's bureau is a legitimate way to blind them.
+**Intelligence bureaus** are a new installation. Each uses a development site and needs power. A country can own **at most 2**.
 
-IP is spent on three things: running operations (§5), counter-intelligence (§6.1) and accusations (§7).
+- **Bureau mode is hidden.** Opponents can see that you have a bureau, but not whether it's spying abroad or guarding at home. You may switch a bureau's mode during planning; the change takes effect at the next upkeep.
+- Your IP reserve is capped at **10**. Anything above that is lost.
+- Each player's IP reserve is **hidden**.
+- A damaged command installation or bureau produces nothing that upkeep. Bombing a rival's bureau is a legitimate way to blind them, or to open them up.
+
+IP is spent on four things: running operations (§5), boosting them (§5.1), counter-intelligence (§6.1) and accusations (§7).
+
+### 3.1 Three ways to play
+
+The numbers are set so that each of these styles is viable:
+
+| Style | Setup | Income | What it can do each round |
+|---|---|---|---|
+| **Balanced** | 1 bureau, Foreign | 5 IP | One operation (for example Sabotage Crew, 2 IP) and still keep CI 3, which stops every unboosted operation |
+| **Full spy** | 2 bureaus, Foreign | 7 IP | Two operations per round, often boosted, with little left for defense |
+| **The rock ("Sweden")** | 2 bureaus, Domestic | 3 IP + 6 free CI | CI 6 at no cost, or up to 9 by spending its income. This stops almost everything. Only a maxed-out operation (§5.1) gets through, and it costs the attacker nearly a full reserve. |
+
+The rock pays for its safety: two development sites spent on bureaus that produce no IP, and almost nothing to attack with. Since bureau modes are hidden, rivals can't tell a rock from a spy until operations start failing, or succeeding.
+
+
 
 ## 4. Shadow slots
 
 ### 4.1 Placement
 
-During planning (main design §3B), at the same time as everyone else, each player places **one shadow marker**, or **two if they own an operational intelligence bureau**. A marker is one of:
+During planning (main design §3B), at the same time as everyone else, each player places **one shadow marker**, or **two if they own at least one operational intelligence bureau** (in either mode). A marker is one of:
 
 | Marker | What it is |
 |---|---|
@@ -72,7 +91,13 @@ The **intelligence step** happens at the start of the event phase (main design �
 
 Once the intelligence step is over, the victim may play an ordinary defensive response to the *effect*, for example *Emergency Relay* after a radar is disabled. This doesn't reveal anything about who did it.
 
-### 5.1 Tension and blame
+### 5.1 Boosting operations
+
+When placing an operation, you may pay extra IP to make it harder to stop. **Each extra IP adds +1 to its difficulty, up to +5.** *Inside Agent* adds +2 more.
+
+The strongest possible operation is difficulty 3, plus Inside Agent (+2), plus a full boost (+5), for a difficulty of 10. It costs 3 + 1 + 5 = **9 IP**. That beats a rock running its normal CI of 9, but not a rock that has also emptied its reserve into CI that round.
+
+### 5.2 Tension and blame
 
 - An operation that succeeds or fails **without exposure** causes no blame. Tension changes only if the card prints **visible-effect tension** (for example, the unrest from *Arm the Insurgents*); nobody is blamed for it.
 - An **exposed** operation reveals its owner to everyone and applies the exposure penalty: **+4 tension, +2 blame, +2 hostility from the target**, plus any blame printed on the card.
@@ -81,9 +106,11 @@ Once the intelligence step is over, the victim may play an ordinary defensive re
 
 ### 6.1 Counter-intelligence (CI)
 
-During planning, each player secretly sets aside IP as **counter-intelligence** for this round. It is spent whether or not anything happens. An operational intelligence bureau adds +1 free CI.
+During planning, each player secretly sets aside IP as **counter-intelligence** for this round. It is spent whether or not anything happens. Each operational bureau in Domestic mode adds +3 free CI.
 
-Each operation has a **difficulty** (printed on the card). When it resolves against you:
+**CI protects your whole country.** One number covers every territory, treaty and asset you own.
+
+Each operation has a **difficulty**: the number printed on the card, plus any boost and Inside Agent. When it resolves against you:
 
 | Comparison | Result |
 |---|---|
@@ -150,9 +177,16 @@ The design doesn't stop players from reasoning about motive, and it shouldn't:
 - CI results match the threshold table exactly; there is no hidden roll.
 - A wrong accusation always costs the accuser; a correct one always exposes the accused.
 
-## 12. Open questions
+## 12. Decisions so far
 
-1. Is one shadow marker per round (two with a bureau) enough activity, or too little?
-2. Should CI protect specific territories rather than the whole country?
-3. Should repeated exposure make a player's later operations easier to catch, as burned spy networks would be?
-4. Should allies be able to share CI, or pool IP for a joint operation?
+| Question | Decision |
+|---|---|
+| Shadow markers per round | One, or two with an intelligence bureau |
+| Where CI applies | The whole country |
+| Viable styles | Balanced, full spy and "the rock" are all supported by the numbers (§3.1) |
+
+## 13. Later ideas (not in the base game)
+
+- **Territory-level pressure campaigns.** Focusing covert pressure on one territory over many rounds to prepare a war there, like the unmarked "little green men" before a real invasion. Tactically interesting, but held back until we know how much complexity the base game can carry.
+- **Burned networks:** repeated exposure makes a player's later operations easier to catch.
+- **Allied intelligence sharing:** pooled CI or joint operations.
