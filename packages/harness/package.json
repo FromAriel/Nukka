@@ -1,0 +1,26 @@
+{
+  "name": "@nukka/harness",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "nukka-sim": "./src/cli.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "sim": "tsx src/cli.ts",
+    "smoke": "tsx src/cli.ts --smoke",
+    "gen:maps": "tsx src/maps/generate.ts"
+  },
+  "dependencies": {
+    "@nukka/ai": "workspace:*",
+    "@nukka/combat": "workspace:*",
+    "@nukka/core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
+}

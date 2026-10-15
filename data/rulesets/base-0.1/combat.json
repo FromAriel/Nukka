@@ -1,0 +1,83 @@
+{
+  "ticksPerSecond": 20,
+  "mapSize": 1200,
+  "conventional": {
+    "windowMs": 40000,
+    "cleanupMs": 20000
+  },
+  "nuclear": {
+    "windowMs": 60000,
+    "cleanupMs": 25000,
+    "waveOffsetsMs": [0, 15000, 30000]
+  },
+  "attackerCommandBudget": 3,
+  "bombs": {
+    "releaseRadius": 20,
+    "fallMs": 3000,
+    "interceptable": false
+  },
+  "hardenedHitsPerStep": 2,
+  "impairedRatePermille": 500,
+  "unsuppliedRatePermille": 500,
+  "terrain": {
+    "plains": {
+      "attackerSpeedPermille": 1000,
+      "defenderDamageTakenPermille": 1000,
+      "assaultExtraSupplies": 0
+    },
+    "forest": {
+      "attackerSpeedPermille": 700,
+      "defenderDamageTakenPermille": 750,
+      "assaultExtraSupplies": 0
+    },
+    "hills": {
+      "attackerSpeedPermille": 700,
+      "defenderDamageTakenPermille": 500,
+      "assaultExtraSupplies": 0
+    },
+    "urban": {
+      "attackerSpeedPermille": 800,
+      "defenderDamageTakenPermille": 750,
+      "assaultExtraSupplies": 1
+    }
+  },
+  "population": {
+    "hitsToDisplace": 1,
+    "hitsToKill": 2
+  },
+  "nuclearEffects": {
+    "blastRadius": 120,
+    "outerRadius": 200,
+    "blastKillPermille": 500,
+    "blastDisplacePermille": 250,
+    "outerDisplace": 1,
+    "contaminationRounds": 3,
+    "contaminationOutputPermille": 500,
+    "devastationPerDetonation": 3
+  },
+  "devastation": [
+    {
+      "at": 9,
+      "farmFood": -1,
+      "waterworksWater": 0,
+      "tradePermille": 1000
+    },
+    {
+      "at": 18,
+      "farmFood": -2,
+      "waterworksWater": 0,
+      "tradePermille": 500
+    },
+    {
+      "at": 27,
+      "farmFood": -2,
+      "waterworksWater": -1,
+      "tradePermille": 500
+    }
+  ],
+  "interdictionDisruptRounds": 2,
+  "emergencyRelayRangePermille": 500,
+  "garrisonRadius": 40,
+  "autopilotAcquisitionMs": 1000,
+  "formationSpacing": 30
+}

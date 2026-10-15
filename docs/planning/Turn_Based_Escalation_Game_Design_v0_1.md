@@ -29,7 +29,9 @@ The standard match ends after round 12, an agreed early settlement, or when only
 
 Prototype scoring:
 
-**Score = 3 × supported surviving population tokens + functioning civilian installations + 2 × controlled non-starting territories.**
+**Score = 3 × supported surviving population tokens + functioning civilian installations + 2 × controlled non-starting territories + 3 × Peace Broker tokens − 1 per 3 infamy.**
+
+Peace Broker tokens and infamy are defined in `Tension_and_Diplomacy_Spec_v0_1.md`.
 
 A population token is supported when its connected supply network has enough current output and reserves to cover its food and water needs over the next two upkeeps. The score preview shows this calculation throughout the game. Population is abstract, not a claim about particular real-world casualty figures.
 
@@ -66,6 +68,8 @@ A tank token represents a mechanized formation. A bomber token represents a form
 A country can therefore own six bombs but only enough aircraft to carry two this exchange. An impressive-looking missile field can contain empty silos. The interface must show **owned, loaded, committed, and available** quantities separately.
 
 ### Use five economic measures
+
+(A sixth measure, Intelligence, funds covert operations; see `Covert_Operations_Spec_v0_1.md`.)
 
 Production pays for building and repair. Food and water have output, demand, and reserves. Power is operating capacity, not a stockpile. Supplies abstract fuel, maintenance, and ordinary ammunition support.
 
@@ -160,6 +164,8 @@ Start with roughly 24 reusable card designs across pressure, mobilization, intel
 Global tension determines nuclear permissions. Bilateral hostility, treaties, and public blame describe relationships and influence AI decisions. Human players retain control of whom they attack; a hostility number never silently selects their targets.
 
 Conventional war is legal before nuclear release. Nuclear weapons remain locked even when tanks and aircraft are already fighting.
+
+The detailed rules for tension sources, the nuclear posture floor, crisis votes, blame, and treaties are in `Tension_and_Diplomacy_Spec_v0_1.md`.
 
 | Global tension | Proposed behavior |
 |---|---|

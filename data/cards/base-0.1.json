@@ -1,0 +1,916 @@
+{
+  "id": "base",
+  "version": "0.1",
+  "cards": [
+    {
+      "id": "propaganda-broadcast",
+      "name": "Propaganda Broadcast",
+      "copies": 3,
+      "plays": ["root"],
+      "tags": ["political"],
+      "text": "Every other player's hostility toward the target rises by 1. Your blame falls by 1.",
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "hostility",
+          "from": "others-except-self",
+          "toward": "$target",
+          "amount": 1
+        },
+        {
+          "op": "blame",
+          "player": "$self",
+          "amount": -1
+        }
+      ],
+      "tension": 2,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "trade-embargo",
+      "name": "Trade Embargo",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["economic"],
+      "text": "Target can't trade for 2 rounds and loses 2 supplies at the next upkeep. Any trade agreement between you ends without penalty.",
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "modify",
+          "player": "$target",
+          "stat": "tradeBlocked",
+          "value": 1,
+          "rounds": 2
+        },
+        {
+          "op": "damage",
+          "player": "$target",
+          "resource": "supplies",
+          "amount": 2,
+          "at": "nextUpkeep"
+        },
+        {
+          "op": "cancel",
+          "treaty": "trade",
+          "between": ["$self", "$target"],
+          "breachPenalty": false
+        }
+      ],
+      "tension": 3,
+      "blame": 1,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "sanctions",
+      "name": "Sanctions",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["economic"],
+      "text": "Target loses 2 production at each of the next 2 upkeeps.",
+      "target": {
+        "type": "player",
+        "owner": "other",
+        "filters": ["blame>=5"]
+      },
+      "effects": [
+        {
+          "op": "damage",
+          "player": "$target",
+          "resource": "production",
+          "amount": 2,
+          "upkeeps": 2
+        }
+      ],
+      "tension": 2,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "global-embargo",
+      "name": "Global Embargo",
+      "copies": 1,
+      "plays": ["global"],
+      "tags": ["economic"],
+      "text": "Every other player chooses Join or Abstain. For each joiner the pariah loses 1 production and 1 supplies at each of the next 2 upkeeps. Your blame falls by 1.",
+      "target": {
+        "type": "player",
+        "owner": "other",
+        "filters": ["pariah"]
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "each-other-player",
+          "options": [
+            {
+              "id": "join",
+              "label": "Join",
+              "effects": [
+                {
+                  "op": "damage",
+                  "player": "$target",
+                  "resource": "production",
+                  "amount": 1,
+                  "upkeeps": 2
+                },
+                {
+                  "op": "damage",
+                  "player": "$target",
+                  "resource": "supplies",
+                  "amount": 1,
+                  "upkeeps": 2
+                },
+                {
+                  "op": "modify",
+                  "player": "$chooser",
+                  "stat": "tradeBlockedWith",
+                  "with": "$target",
+                  "rounds": 2
+                }
+              ]
+            },
+            {
+              "id": "abstain",
+              "label": "Abstain",
+              "effects": []
+            }
+          ]
+        },
+        {
+          "op": "blame",
+          "player": "$self",
+          "amount": -1
+        }
+      ],
+      "tension": 3,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "ultimatum",
+      "name": "Ultimatum",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["political", "military"],
+      "text": "Name a non-starting territory of the target adjacent to yours. They yield it, or refuse and you may declare war this round at no extra cost, with +1 formation command against it.",
+      "target": {
+        "type": "territory",
+        "owner": "other",
+        "filters": ["non-starting", "adjacent-to-self"]
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "target",
+          "options": [
+            {
+              "id": "yield",
+              "label": "Yield",
+              "effects": [
+                {
+                  "op": "transfer",
+                  "territory": "$target",
+                  "to": "$self"
+                },
+                {
+                  "op": "hostility",
+                  "from": "$targetOwner",
+                  "toward": "$self",
+                  "amount": 3
+                }
+              ]
+            },
+            {
+              "id": "refuse",
+              "label": "Refuse",
+              "effects": [
+                {
+                  "op": "modify",
+                  "player": "$self",
+                  "stat": "freeWarDeclaration",
+                  "against": "$targetOwner",
+                  "rounds": 1
+                },
+                {
+                  "op": "modify",
+                  "player": "$self",
+                  "stat": "assaultCommandBonus",
+                  "territory": "$target",
+                  "delta": 1,
+                  "rounds": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tension": 15,
+      "blame": 3,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "doomsday-rhetoric",
+      "name": "Doomsday Rhetoric",
+      "copies": 1,
+      "plays": ["global"],
+      "tags": ["political", "nuclear"],
+      "text": "Every other player pays you 2 production or 2 supplies, or refuses and their hostility toward you rises by 2. You draw 1 card.",
+      "requires": ["self.nuclearAssets>=1"],
+      "target": {
+        "type": "none"
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "each-other-player",
+          "options": [
+            {
+              "id": "pay-production",
+              "label": "Pay 2 production",
+              "effects": [
+                {
+                  "op": "transfer",
+                  "resource": "production",
+                  "amount": 2,
+                  "from": "$chooser",
+                  "to": "$self"
+                }
+              ]
+            },
+            {
+              "id": "pay-supplies",
+              "label": "Pay 2 supplies",
+              "effects": [
+                {
+                  "op": "transfer",
+                  "resource": "supplies",
+                  "amount": 2,
+                  "from": "$chooser",
+                  "to": "$self"
+                }
+              ]
+            },
+            {
+              "id": "refuse",
+              "label": "Refuse",
+              "effects": [
+                {
+                  "op": "hostility",
+                  "from": "$chooser",
+                  "toward": "$self",
+                  "amount": 2
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "draw",
+          "player": "$self",
+          "count": 1
+        }
+      ],
+      "tension": 20,
+      "blame": 3,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "destabilize-government",
+      "name": "Destabilize Government",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["political"],
+      "text": "Target loses one development order next round and discards one card at random. You draw 1 card.",
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "modify",
+          "player": "$target",
+          "stat": "developmentOrders",
+          "delta": -1,
+          "rounds": 1,
+          "from": "nextRound"
+        },
+        {
+          "op": "discard",
+          "player": "$target",
+          "count": 1,
+          "random": true
+        },
+        {
+          "op": "draw",
+          "player": "$self",
+          "count": 1
+        }
+      ],
+      "tension": 8,
+      "blame": 2,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "arm-the-insurgents",
+      "name": "Arm the Insurgents",
+      "copies": 2,
+      "plays": ["operation"],
+      "tags": ["covert", "military"],
+      "text": "Target territory is contested for 2 rounds: out of its owner's supply network, and its garrison loses 1 formation.",
+      "cost": {
+        "ip": 3
+      },
+      "difficulty": 3,
+      "target": {
+        "type": "territory",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "disable",
+          "territory": "$target",
+          "status": "contested",
+          "rounds": 2
+        },
+        {
+          "op": "damage",
+          "territory": "$target",
+          "garrisonFormations": 1
+        }
+      ],
+      "tension": 8,
+      "blame": 2,
+      "tensionWhen": "on-success",
+      "blameWhen": "on-exposure"
+    },
+    {
+      "id": "sabotage-crew",
+      "name": "Sabotage Crew",
+      "copies": 3,
+      "plays": ["operation"],
+      "tags": ["covert"],
+      "text": "Disable one radar, command, power or depot installation until the end of that round's combat.",
+      "cost": {
+        "ip": 2
+      },
+      "difficulty": 2,
+      "target": {
+        "type": "installation",
+        "owner": "other",
+        "kinds": ["radar", "command", "powerStation", "depot"]
+      },
+      "effects": [
+        {
+          "op": "disable",
+          "installation": "$target",
+          "until": "endOfCombat"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "on-success",
+      "blameWhen": "on-exposure"
+    },
+    {
+      "id": "reconnaissance",
+      "name": "Reconnaissance",
+      "copies": 3,
+      "plays": ["operation"],
+      "tags": ["covert"],
+      "text": "Until the next upkeep, privately see the target's nuclear breakdown and submarine and patrol positions. Reveals Covert Program assets.",
+      "cost": {
+        "ip": 1
+      },
+      "difficulty": 1,
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "reveal",
+          "subject": ["nuclearBreakdown", "submarines", "patrols", "covertPrograms"],
+          "of": "$target",
+          "to": "$self",
+          "until": "nextUpkeep"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "on-success",
+      "blameWhen": "on-exposure"
+    },
+    {
+      "id": "covert-program",
+      "name": "Covert Program",
+      "copies": 2,
+      "plays": ["build-modifier"],
+      "tags": ["covert", "nuclear"],
+      "text": "The nuclear build this accompanies causes no tension spike or posture change until revealed. When revealed: 1.5x its spike and +3 blame.",
+      "cost": {
+        "ip": 2
+      },
+      "target": {
+        "type": "own-build",
+        "kinds": ["silo", "submarine", "warheads", "bomber", "gravityBombs"]
+      },
+      "effects": [
+        {
+          "op": "modify",
+          "build": "$target",
+          "hidden": true
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "on-reveal",
+      "blameWhen": "on-reveal"
+    },
+    {
+      "id": "security-sweep",
+      "name": "Security Sweep",
+      "copies": 4,
+      "plays": ["countermeasure"],
+      "tags": ["covert"],
+      "text": "Face down for up to 3 rounds. Cancels and exposes the first covert operation against you.",
+      "target": {
+        "type": "none"
+      },
+      "effects": [
+        {
+          "op": "cancel",
+          "operation": "first-against-owner",
+          "expose": true
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always",
+      "lastsRounds": 3
+    },
+    {
+      "id": "inside-agent",
+      "name": "Inside Agent",
+      "copies": 3,
+      "plays": ["attachment"],
+      "tags": ["covert"],
+      "text": "The operation it accompanies ignores countermeasures, and its difficulty counts as 2 higher against counter-intelligence.",
+      "cost": {
+        "ip": 1
+      },
+      "target": {
+        "type": "operation",
+        "owner": "self"
+      },
+      "effects": [
+        {
+          "op": "modify",
+          "operation": "$target",
+          "ignoresCountermeasures": true,
+          "difficultyBonus": 2
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "full-mobilization",
+      "name": "Full Mobilization",
+      "copies": 1,
+      "plays": ["root"],
+      "tags": ["military"],
+      "text": "Next round: +1 repositioning order and +1 development order (military only). Your units pay no supply upkeep at the next upkeep.",
+      "target": {
+        "type": "none"
+      },
+      "effects": [
+        {
+          "op": "modify",
+          "player": "$self",
+          "stat": "repositioningOrders",
+          "delta": 1,
+          "rounds": 1,
+          "from": "nextRound"
+        },
+        {
+          "op": "modify",
+          "player": "$self",
+          "stat": "militaryDevelopmentOrders",
+          "delta": 1,
+          "rounds": 1,
+          "from": "nextRound"
+        },
+        {
+          "op": "modify",
+          "player": "$self",
+          "stat": "supplyUpkeepWaived",
+          "upkeeps": 1
+        }
+      ],
+      "tension": 18,
+      "blame": 2,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "border-exercise",
+      "name": "Border Exercise",
+      "copies": 3,
+      "plays": ["root"],
+      "tags": ["military"],
+      "text": "Move up to two of your stacks into one of your territories bordering the target, without using your repositioning order.",
+      "target": {
+        "type": "player",
+        "owner": "other",
+        "filters": ["borders-self"]
+      },
+      "effects": [
+        {
+          "op": "move",
+          "stacks": 2,
+          "to": "own-territory-bordering-target",
+          "free": true
+        },
+        {
+          "op": "hostility",
+          "from": "$target",
+          "toward": "$self",
+          "amount": 1
+        }
+      ],
+      "tension": 3,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "nuclear-test",
+      "name": "Nuclear Test",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["nuclear"],
+      "text": "Destroy one of your warheads. Until the end of next round, declaring war on you costs +6 tension and +1 blame.",
+      "requires": ["self.warheads>=1"],
+      "target": {
+        "type": "none"
+      },
+      "effects": [
+        {
+          "op": "damage",
+          "player": "$self",
+          "ammunition": "warheads",
+          "amount": 1
+        },
+        {
+          "op": "modify",
+          "player": "$self",
+          "stat": "warDeclarationSurcharge",
+          "tension": 6,
+          "blame": 1,
+          "rounds": 2
+        }
+      ],
+      "tension": 8,
+      "blame": 1,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "rapid-resupply",
+      "name": "Rapid Resupply",
+      "copies": 3,
+      "plays": ["response", "stabilization"],
+      "tags": ["military"],
+      "text": "Refill the magazines of up to 2 defense batteries in the targeted territory, even without a supply connection.",
+      "target": {
+        "type": "chain-card",
+        "filters": ["hostile", "targets-own-territory"]
+      },
+      "effects": [
+        {
+          "op": "transfer",
+          "refillBatteries": 2,
+          "territory": "$chainTarget"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "emergency-relay",
+      "name": "Emergency Relay",
+      "copies": 3,
+      "plays": ["stabilization"],
+      "tags": ["military"],
+      "text": "A disabled radar or command installation gives backup detection at half range for this round's combat.",
+      "target": {
+        "type": "installation",
+        "owner": "self-or-partner",
+        "kinds": ["radar", "command"],
+        "filters": ["disabled"]
+      },
+      "effects": [
+        {
+          "op": "protect",
+          "installation": "$target",
+          "rule": "backupDetection",
+          "rangePermille": 500,
+          "until": "endOfCombat"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "hardened-shelters",
+      "name": "Hardened Shelters",
+      "copies": 3,
+      "plays": ["response", "stabilization"],
+      "tags": ["military"],
+      "text": "Each population center in the targeted territory loses at most 1 population token from this round's combat.",
+      "target": {
+        "type": "chain-card",
+        "filters": ["hostile", "targets-own-territory"]
+      },
+      "effects": [
+        {
+          "op": "protect",
+          "territory": "$chainTarget",
+          "rule": "maxPopulationLoss",
+          "amount": 1,
+          "until": "endOfCombat"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "smuggling-network",
+      "name": "Smuggling Network",
+      "copies": 3,
+      "plays": ["response", "stabilization"],
+      "tags": ["economic"],
+      "text": "Halve every resource loss the targeted economic card or interdiction causes, rounding the loss down.",
+      "target": {
+        "type": "chain-card",
+        "filters": ["economic-or-interdiction", "targets-self"]
+      },
+      "effects": [
+        {
+          "op": "protect",
+          "player": "$self",
+          "rule": "resourceLoss",
+          "permille": 500,
+          "source": "$chainCard"
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "summit",
+      "name": "Summit",
+      "copies": 2,
+      "plays": ["global"],
+      "tags": ["diplomatic"],
+      "text": "Every player chooses Attend or Refuse; you attend. Tension -3 per attendee. Attendees can't attack each other until the end of next round. Refusers gain 1 blame. You draw 1 card.",
+      "target": {
+        "type": "none"
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "each-other-player",
+          "options": [
+            {
+              "id": "attend",
+              "label": "Attend",
+              "effects": [
+                {
+                  "op": "tension",
+                  "amount": -3
+                },
+                {
+                  "op": "modify",
+                  "player": "$chooser",
+                  "stat": "summitAttendee",
+                  "rounds": 2
+                }
+              ]
+            },
+            {
+              "id": "refuse",
+              "label": "Refuse",
+              "effects": [
+                {
+                  "op": "blame",
+                  "player": "$chooser",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "op": "modify",
+          "player": "$self",
+          "stat": "summitAttendee",
+          "rounds": 2
+        },
+        {
+          "op": "draw",
+          "player": "$self",
+          "count": 1
+        }
+      ],
+      "tension": -3,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "hotline",
+      "name": "Hotline",
+      "copies": 3,
+      "plays": ["root", "stabilization"],
+      "tags": ["diplomatic"],
+      "text": "Root: the target may accept (tension -5; hostility between you -2 each way). Stabilization: halve this chain's tension change; it causes no hostility changes.",
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "target",
+          "mode": "root",
+          "options": [
+            {
+              "id": "accept",
+              "label": "Accept",
+              "effects": [
+                {
+                  "op": "tension",
+                  "amount": -5
+                },
+                {
+                  "op": "hostility",
+                  "from": "$target",
+                  "toward": "$self",
+                  "amount": -2
+                },
+                {
+                  "op": "hostility",
+                  "from": "$self",
+                  "toward": "$target",
+                  "amount": -2
+                }
+              ]
+            },
+            {
+              "id": "decline",
+              "label": "Decline",
+              "effects": []
+            }
+          ]
+        },
+        {
+          "op": "modify",
+          "mode": "stabilization",
+          "chain": "current",
+          "tensionPermille": 500,
+          "noHostility": true
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "verification-mission",
+      "name": "Verification Mission",
+      "copies": 2,
+      "plays": ["root"],
+      "tags": ["diplomatic"],
+      "text": "Target accepts (you each see the other's nuclear breakdown; tension -4; both lose 1 blame) or declines (+1 blame).",
+      "target": {
+        "type": "player",
+        "owner": "other"
+      },
+      "effects": [
+        {
+          "op": "choice",
+          "chooser": "target",
+          "options": [
+            {
+              "id": "accept",
+              "label": "Accept",
+              "effects": [
+                {
+                  "op": "reveal",
+                  "subject": ["nuclearBreakdown", "covertPrograms"],
+                  "of": "$target",
+                  "to": "$self"
+                },
+                {
+                  "op": "reveal",
+                  "subject": ["nuclearBreakdown", "covertPrograms"],
+                  "of": "$self",
+                  "to": "$target"
+                },
+                {
+                  "op": "tension",
+                  "amount": -4
+                },
+                {
+                  "op": "blame",
+                  "player": "$self",
+                  "amount": -1
+                },
+                {
+                  "op": "blame",
+                  "player": "$target",
+                  "amount": -1
+                }
+              ]
+            },
+            {
+              "id": "decline",
+              "label": "Decline",
+              "effects": [
+                {
+                  "op": "blame",
+                  "player": "$target",
+                  "amount": 1
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tension": 0,
+      "blame": 0,
+      "tensionWhen": "always",
+      "blameWhen": "always"
+    },
+    {
+      "id": "spoiler",
+      "name": "Spoiler",
+      "copies": 2,
+      "plays": ["operation"],
+      "tags": ["covert", "diplomatic"],
+      "text": "End one treaty between two other players with no breach penalty; the re-signing cooldown applies and their hostility toward each other rises by 1.",
+      "cost": {
+        "ip": 2
+      },
+      "difficulty": 3,
+      "target": {
+        "type": "treaty",
+        "filters": ["between-others"]
+      },
+      "effects": [
+        {
+          "op": "cancel",
+          "treaty": "$target",
+          "breachPenalty": false,
+          "cooldown": true
+        },
+        {
+          "op": "hostility",
+          "between": "$signatories",
+          "amount": 1
+        }
+      ],
+      "tension": 2,
+      "blame": 0,
+      "tensionWhen": "on-success",
+      "blameWhen": "on-exposure"
+    }
+  ]
+}

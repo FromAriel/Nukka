@@ -1,0 +1,38 @@
+{
+  "id": "cold-start",
+  "name": "Cold start",
+  "description": "Default testing start: conventional forces only, no nuclear weapons.",
+  "homes": {
+    "capital": {
+      "installations": [
+        {
+          "kind": "radar"
+        }
+      ]
+    },
+    "port": {
+      "installations": [
+        {
+          "kind": "airfield"
+        },
+        {
+          "kind": "gunBattery"
+        }
+      ],
+      "units": {
+        "aircraft": 1
+      }
+    },
+    "heartland": {
+      "installations": [
+        {
+          "kind": "gunBattery"
+        }
+      ],
+      "units": {
+        "groundFormation": 3
+      }
+    }
+  },
+  "stock": {}
+}

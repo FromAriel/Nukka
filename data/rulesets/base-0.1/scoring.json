@@ -1,0 +1,15 @@
+{
+  "supportedPopulation": 3,
+  "civilianInstallation": 1,
+  "nonStartingTerritory": 2,
+  "peaceBrokerToken": 3,
+  "infamyPenaltyEvery": 3,
+  "civilianInstallationKinds": [
+    "industry",
+    "farm",
+    "waterworks",
+    "powerStation",
+    "depot",
+    "shelter"
+  ]
+}

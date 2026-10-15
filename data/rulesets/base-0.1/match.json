@@ -1,0 +1,27 @@
+{
+  "rounds": 12,
+  "players": {
+    "min": 2,
+    "max": 4
+  },
+  "hand": {
+    "start": 6,
+    "drawPerRound": 2,
+    "max": 7
+  },
+  "reactionPointsPerRound": 2,
+  "orders": {
+    "development": 2,
+    "repositioning": 1,
+    "main": 1
+  },
+  "chain": {
+    "maxCards": 4,
+    "responseWindowMs": 8000
+  },
+  "neutral": {
+    "militiaPerTerritory": 2,
+    "militiaAfterTiedClaim": 1,
+    "captureTension": 1
+  }
+}

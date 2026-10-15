@@ -1,0 +1,18 @@
+{
+  "id": "rock",
+  "description": "The rock: two domestic bureaus, heavy counter-intelligence, defensive and quiet.",
+  "weights": {
+    "economy": 7,
+    "defense": 8,
+    "military": 2,
+    "expansion": 2,
+    "nuclear": 0,
+    "covert": 6,
+    "diplomacy": 4,
+    "aggression": 0
+  },
+  "counterIntelShare": 900,
+  "authorizeRelease": false,
+  "honorAllies": false,
+  "bureauMode": "domestic"
+}

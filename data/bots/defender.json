@@ -1,0 +1,18 @@
+{
+  "id": "defender",
+  "description": "Defensive survivor: layered defenses, shelters and reserves.",
+  "weights": {
+    "economy": 7,
+    "defense": 10,
+    "military": 3,
+    "expansion": 2,
+    "nuclear": 1,
+    "covert": 1,
+    "diplomacy": 5,
+    "aggression": 1
+  },
+  "counterIntelShare": 400,
+  "authorizeRelease": false,
+  "honorAllies": true,
+  "bureauMode": "foreign"
+}

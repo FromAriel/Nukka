@@ -1,0 +1,33 @@
+{
+  "shadowSlots": {
+    "base": 1,
+    "withBureau": 2
+  },
+  "fuse": {
+    "minRounds": 1,
+    "maxRounds": 3,
+    "preciseTimingCost": 1
+  },
+  "boost": {
+    "perIp": 1,
+    "maxBonus": 5
+  },
+  "exposeMargin": 2,
+  "countermeasureRounds": 3,
+  "exposure": {
+    "tension": 4,
+    "blame": 2,
+    "hostility": 2
+  },
+  "accusation": {
+    "cost": 1,
+    "perRound": 1,
+    "lookbackRounds": 3,
+    "wrongBlame": 2,
+    "wrongHostility": 2
+  },
+  "covertProgram": {
+    "revealSpikePermille": 1500,
+    "revealBlame": 3
+  }
+}

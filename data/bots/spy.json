@@ -1,0 +1,18 @@
+{
+  "id": "spy",
+  "description": "Full spy: two foreign bureaus and a steady stream of covert operations.",
+  "weights": {
+    "economy": 6,
+    "defense": 3,
+    "military": 2,
+    "expansion": 3,
+    "nuclear": 1,
+    "covert": 10,
+    "diplomacy": 3,
+    "aggression": 4
+  },
+  "counterIntelShare": 100,
+  "authorizeRelease": false,
+  "honorAllies": true,
+  "bureauMode": "foreign"
+}

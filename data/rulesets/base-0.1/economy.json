@@ -1,0 +1,186 @@
+{
+  "caps": {
+    "production": 15,
+    "food": 12,
+    "water": 12,
+    "supplies": 10,
+    "intelligence": 10
+  },
+  "government": {
+    "supplies": 2,
+    "intelligence": 2
+  },
+  "populationDemand": {
+    "food": 1,
+    "water": 1
+  },
+  "exclaveProductionCost": 1,
+  "housing": {
+    "urban": 5,
+    "plains": 2,
+    "hills": 2,
+    "forest": 2
+  },
+  "shortages": {
+    "hungryUpkeepsBeforeLoss": 2,
+    "unsuppliedUpkeepsBeforeDisband": 2,
+    "displacedUpkeepsBeforeLoss": 2
+  },
+  "supportedForecastUpkeeps": 2,
+  "repair": {
+    "repairCostPermille": 500,
+    "rebuildExtraCost": 2,
+    "rebuildUpkeeps": 2,
+    "clearRuinedCost": 1
+  },
+  "startingReserves": {
+    "production": 6,
+    "food": 6,
+    "water": 6,
+    "supplies": 8,
+    "intelligence": 2
+  },
+  "installations": {
+    "industry": {
+      "cost": 6,
+      "powerDraw": 1,
+      "civilian": true,
+      "hardened": false,
+      "modes": {
+        "construction": {
+          "production": 3
+        },
+        "supply": {
+          "supplies": 4
+        }
+      },
+      "featureBonus": {
+        "ore": 1
+      },
+      "defaultMode": "construction"
+    },
+    "farm": {
+      "cost": 4,
+      "powerDraw": 0,
+      "civilian": true,
+      "hardened": false,
+      "requiresFeature": "farmland",
+      "output": {
+        "food": 4
+      },
+      "upgrade": {
+        "id": "irrigation",
+        "cost": 3,
+        "output": {
+          "food": 6
+        },
+        "requiresNetworkResource": "water"
+      }
+    },
+    "waterworks": {
+      "cost": 4,
+      "powerDraw": 1,
+      "civilian": true,
+      "hardened": false,
+      "requiresFeature": "water",
+      "output": {
+        "water": 4
+      },
+      "upgrade": {
+        "id": "expansion",
+        "cost": 3,
+        "output": {
+          "water": 6
+        }
+      }
+    },
+    "powerStation": {
+      "cost": 5,
+      "powerDraw": 0,
+      "powerSupply": 8,
+      "civilian": true,
+      "hardened": false
+    },
+    "depot": {
+      "cost": 3,
+      "powerDraw": 0,
+      "civilian": true,
+      "hardened": false,
+      "supplyCapBonus": 5
+    },
+    "shelter": {
+      "cost": 3,
+      "powerDraw": 0,
+      "civilian": true,
+      "hardened": false,
+      "housingBonus": 1
+    },
+    "command": {
+      "cost": 6,
+      "powerDraw": 1,
+      "civilian": false,
+      "hardened": true,
+      "output": {
+        "intelligence": 1
+      }
+    },
+    "radar": {
+      "cost": 4,
+      "powerDraw": 1,
+      "civilian": false,
+      "hardened": false,
+      "visionRange": 350
+    },
+    "bureau": {
+      "cost": 5,
+      "powerDraw": 1,
+      "civilian": false,
+      "hardened": false,
+      "maxPerCountry": 2,
+      "modes": {
+        "foreign": {
+          "intelligence": 2
+        },
+        "domestic": {
+          "counterIntel": 3
+        }
+      },
+      "defaultMode": "foreign"
+    },
+    "airfield": {
+      "cost": 6,
+      "powerDraw": 1,
+      "civilian": false,
+      "hardened": false,
+      "aircraftCapacity": 3
+    },
+    "missileLauncher": {
+      "cost": 5,
+      "powerDraw": 1,
+      "civilian": false,
+      "hardened": false,
+      "missileCapacity": 2
+    },
+    "silo": {
+      "cost": 10,
+      "powerDraw": 0,
+      "civilian": false,
+      "hardened": true,
+      "missileCapacity": 2,
+      "supplyUpkeep": 1
+    }
+  },
+  "powerPriority": [
+    "waterworks",
+    "command",
+    "radar",
+    "highAltitudeScreen",
+    "precisionInterceptor",
+    "burstInterceptor",
+    "gunBattery",
+    "missileLauncher",
+    "airfield",
+    "industry",
+    "bureau"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "id": "expansionist",
+  "description": "Conventional expansionist: takes neutral land, then weaker neighbours.",
+  "weights": {
+    "economy": 5,
+    "defense": 2,
+    "military": 9,
+    "expansion": 10,
+    "nuclear": 1,
+    "covert": 1,
+    "diplomacy": 1,
+    "aggression": 7
+  },
+  "counterIntelShare": 100,
+  "authorizeRelease": false,
+  "honorAllies": true,
+  "bureauMode": "foreign"
+}
