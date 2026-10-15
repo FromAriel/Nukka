@@ -58,6 +58,8 @@ function parseArgs(argv: readonly string[]): Options {
       return v;
     };
     switch (arg) {
+      case '--':
+        break; // pnpm passes a bare separator through
       case '--ruleset':
         options.ruleset = value();
         break;
