@@ -12,7 +12,8 @@
   "scripts": {
     "typecheck": "tsc -p tsconfig.json",
     "sim": "tsx src/cli.ts",
-    "smoke": "tsx src/cli.ts --smoke"
+    "smoke": "tsx src/cli.ts --smoke",
+    "gen:maps": "tsx src/maps/generate.ts"
   },
   "dependencies": {
     "@nukka/core": "workspace:*",

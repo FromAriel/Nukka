@@ -1,13 +1,31 @@
+# One job runs every check in a single runner, so each run bills once.
+# It does not run on ordinary branch pushes: `pnpm check` runs locally and in
+# cloud sessions before every commit. CI is the backstop for pull requests
+# and main, and superseded runs are cancelled.
 name: CI
 
 on:
-  push:
-    branches: [main, 'claude/**']
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check:
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

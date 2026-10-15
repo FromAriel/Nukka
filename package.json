@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "smoke": "pnpm --filter @nukka/harness run smoke",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm smoke"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm smoke",
+    "gen:maps": "pnpm --filter @nukka/harness run gen:maps"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

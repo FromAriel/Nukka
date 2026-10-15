@@ -8,7 +8,7 @@ All numbers are starting values for playtesting, not balance. Weapons are delibe
 
 | Setting | Value |
 |---|---|
-| Map space | 1000 × 1000 units (one test-map grid cell ≈ 200 units) |
+| Map space | 1200 × 1200 units: the 1000 × 1000 land area plus a 100-unit ocean margin (one test-map grid cell = 200 units) |
 | Simulation rate | 20 ticks per second, fixed, independent of frame rate |
 | Conventional window | 40 s, then up to 20 s of cleanup |
 | Nuclear window | 60 s, then up to 25 s of cleanup |

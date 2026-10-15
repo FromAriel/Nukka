@@ -158,7 +158,7 @@ The player leaves promptly (main design §11):
 
 The strategic map and the combat battlefield use the same 2D coordinates (main design §6).
 
-- The map is **1000 × 1000 simulation units**. Each grid cell is about 200 × 200, before territory shapes are made irregular.
+- The map is **1200 × 1200 simulation units**: a 1000 × 1000 land area plus a 100-unit ocean margin. Each grid cell is 200 × 200, before territory shapes are made irregular.
 - **Development sites** are fixed points inside each territory. Placement uses these points, not free building (main design §2).
 - **Approach lanes** run across each land border. Ground formations advance along them, and terrain sets their speed.
 - **Aircraft** enter from the map edges or from sea zones, depending on where they are based.

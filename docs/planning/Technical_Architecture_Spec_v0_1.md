@@ -64,7 +64,7 @@ Lint enforces these boundaries. In particular, **core never imports combat, ai o
 
 All simulation values are integers. There are no floating-point numbers in core or combat.
 
-- **Positions:** stored in milli-units. The 1000 × 1000 map is 1,000,000 × 1,000,000 internally.
+- **Positions:** stored in milli-units. The 1200 × 1200 map is 1,200,000 × 1,200,000 internally.
 - **Fractions:** stored as per-mille integers. A terrain multiplier of ×0.75 is `750`; HP is tracked in milli-HP so fractional damage carries over exactly (combat spec §4.3).
 - **Trigonometry:** angles use a fixed integer scale, and sine and cosine come from a precomputed lookup table committed to the repo. `Math.sin` and similar functions are never used, because their results can differ between JavaScript engines.
 - **Flight paths:** missile arcs are integer Bézier curves.

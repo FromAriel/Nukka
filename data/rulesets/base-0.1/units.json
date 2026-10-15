@@ -1,0 +1,157 @@
+{
+  "units": {
+    "groundFormation": {
+      "cost": 3,
+      "supplyUpkeep": 1,
+      "hp": 6,
+      "speed": 10,
+      "domain": "ground",
+      "weapon": {
+        "range": 40,
+        "damage": 1,
+        "intervalMs": 2000,
+        "targets": ["ground"]
+      },
+      "nuclearCapable": false,
+      "buildable": true
+    },
+    "groundDefense": {
+      "cost": 3,
+      "supplyUpkeep": 1,
+      "hp": 6,
+      "speed": 10,
+      "domain": "ground",
+      "weapon": {
+        "range": 60,
+        "damage": 2,
+        "intervalMs": 2000,
+        "targets": ["ground"]
+      },
+      "nuclearCapable": false,
+      "buildable": true
+    },
+    "militia": {
+      "cost": 0,
+      "supplyUpkeep": 0,
+      "hp": 4,
+      "speed": 0,
+      "domain": "ground",
+      "weapon": {
+        "range": 40,
+        "damage": 1,
+        "intervalMs": 2000,
+        "targets": ["ground"]
+      },
+      "nuclearCapable": false,
+      "buildable": false
+    },
+    "aircraft": {
+      "cost": 4,
+      "supplyUpkeep": 1,
+      "hp": 3,
+      "speed": 40,
+      "domain": "air",
+      "operationRange": 600,
+      "requiresInstallation": "airfield",
+      "roles": {
+        "strike": {
+          "conventionalBombs": 2
+        },
+        "escort": {
+          "weapon": {
+            "range": 60,
+            "damage": 1,
+            "intervalMs": 2000,
+            "targets": ["air"]
+          }
+        }
+      },
+      "nuclearCapable": false,
+      "buildable": true
+    },
+    "bomber": {
+      "cost": 6,
+      "supplyUpkeep": 1,
+      "hp": 4,
+      "speed": 30,
+      "domain": "air",
+      "operationRange": 600,
+      "requiresInstallation": "airfield",
+      "carries": {
+        "nuclearBombs": 1,
+        "conventionalBombs": 4
+      },
+      "nuclearCapable": true,
+      "buildable": true
+    },
+    "patrol": {
+      "cost": 4,
+      "supplyUpkeep": 1,
+      "hp": 3,
+      "speed": 0,
+      "domain": "sea",
+      "visionRange": 250,
+      "coastalOnly": true,
+      "weapon": {
+        "range": 100,
+        "damage": 1,
+        "intervalMs": 10000,
+        "targets": ["sea"]
+      },
+      "nuclearCapable": false,
+      "buildable": true
+    },
+    "submarine": {
+      "cost": 12,
+      "supplyUpkeep": 2,
+      "hp": 3,
+      "speed": 0,
+      "domain": "sea",
+      "missileCapacity": 2,
+      "launchRange": 700,
+      "coastalOnly": true,
+      "nuclearCapable": true,
+      "buildable": true
+    }
+  },
+  "ammunition": {
+    "conventionalBombs": {
+      "cost": 2,
+      "quantity": 4,
+      "nuclear": false
+    },
+    "conventionalMissiles": {
+      "cost": 3,
+      "quantity": 2,
+      "nuclear": false
+    },
+    "warheads": {
+      "cost": 6,
+      "quantity": 2,
+      "nuclear": true
+    },
+    "gravityBombs": {
+      "cost": 4,
+      "quantity": 2,
+      "nuclear": true
+    }
+  },
+  "missiles": {
+    "conventional": {
+      "hp": 1,
+      "speed": 80,
+      "range": 600,
+      "class": "missile"
+    },
+    "strategic": {
+      "hp": 1,
+      "speed": 60,
+      "range": null,
+      "class": "strategic",
+      "boostMs": 3000,
+      "terminalMs": 5000,
+      "minFlightMs": 10000,
+      "maxFlightMs": 25000
+    }
+  }
+}

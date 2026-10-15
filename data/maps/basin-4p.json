@@ -1,0 +1,1842 @@
+{
+  "id": "basin-4p",
+  "name": "The Basin (test map)",
+  "version": "0.1",
+  "size": [
+    1200,
+    1200
+  ],
+  "homes": [
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+  "territories": [
+    {
+      "id": "A-capital",
+      "name": "A Capital",
+      "role": "capital",
+      "terrain": "urban",
+      "homeOf": "A",
+      "population": 3,
+      "features": [
+        "water"
+      ],
+      "sites": [
+        [
+          150,
+          150
+        ],
+        [
+          250,
+          150
+        ],
+        [
+          150,
+          250
+        ],
+        [
+          250,
+          250
+        ]
+      ],
+      "garrison": [
+        200,
+        200
+      ],
+      "shape": [
+        [
+          100,
+          100
+        ],
+        [
+          300,
+          100
+        ],
+        [
+          300,
+          300
+        ],
+        [
+          100,
+          300
+        ]
+      ],
+      "land": [
+        "A-port",
+        "A-uplands"
+      ],
+      "sea": [
+        "sea-NW"
+      ],
+      "start": [
+        "command",
+        "industry",
+        "powerStation"
+      ]
+    },
+    {
+      "id": "A-heartland",
+      "name": "A Heartland",
+      "role": "heartland",
+      "terrain": "plains",
+      "homeOf": "A",
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          350,
+          350
+        ],
+        [
+          450,
+          350
+        ],
+        [
+          350,
+          450
+        ],
+        [
+          450,
+          450
+        ]
+      ],
+      "garrison": [
+        400,
+        400
+      ],
+      "shape": [
+        [
+          300,
+          300
+        ],
+        [
+          500,
+          300
+        ],
+        [
+          500,
+          500
+        ],
+        [
+          300,
+          500
+        ]
+      ],
+      "land": [
+        "A-port",
+        "A-uplands",
+        "N-lakeshore",
+        "W-lakeshore"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": [
+        "farm:irrigation",
+        "waterworks:expansion"
+      ]
+    },
+    {
+      "id": "A-port",
+      "name": "A Port",
+      "role": "port",
+      "terrain": "plains",
+      "homeOf": "A",
+      "population": 1,
+      "features": [],
+      "sites": [
+        [
+          350,
+          150
+        ],
+        [
+          450,
+          150
+        ],
+        [
+          350,
+          250
+        ],
+        [
+          450,
+          250
+        ]
+      ],
+      "garrison": [
+        400,
+        200
+      ],
+      "shape": [
+        [
+          300,
+          100
+        ],
+        [
+          500,
+          100
+        ],
+        [
+          500,
+          300
+        ],
+        [
+          300,
+          300
+        ]
+      ],
+      "land": [
+        "A-capital",
+        "A-heartland",
+        "N-frontier"
+      ],
+      "sea": [
+        "sea-N",
+        "sea-NW"
+      ],
+      "start": [
+        "depot"
+      ]
+    },
+    {
+      "id": "A-uplands",
+      "name": "A Uplands",
+      "role": "uplands",
+      "terrain": "hills",
+      "homeOf": "A",
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          150,
+          350
+        ],
+        [
+          250,
+          350
+        ],
+        [
+          150,
+          450
+        ],
+        [
+          250,
+          450
+        ]
+      ],
+      "garrison": [
+        200,
+        400
+      ],
+      "shape": [
+        [
+          100,
+          300
+        ],
+        [
+          300,
+          300
+        ],
+        [
+          300,
+          500
+        ],
+        [
+          100,
+          500
+        ]
+      ],
+      "land": [
+        "A-capital",
+        "A-heartland",
+        "W-frontier"
+      ],
+      "sea": [
+        "sea-NW",
+        "sea-W"
+      ],
+      "start": [
+        "industry"
+      ]
+    },
+    {
+      "id": "B-capital",
+      "name": "B Capital",
+      "role": "capital",
+      "terrain": "urban",
+      "homeOf": "B",
+      "population": 3,
+      "features": [
+        "water"
+      ],
+      "sites": [
+        [
+          950,
+          150
+        ],
+        [
+          1050,
+          150
+        ],
+        [
+          950,
+          250
+        ],
+        [
+          1050,
+          250
+        ]
+      ],
+      "garrison": [
+        1000,
+        200
+      ],
+      "shape": [
+        [
+          900,
+          100
+        ],
+        [
+          1100,
+          100
+        ],
+        [
+          1100,
+          300
+        ],
+        [
+          900,
+          300
+        ]
+      ],
+      "land": [
+        "B-port",
+        "B-uplands"
+      ],
+      "sea": [
+        "sea-NE"
+      ],
+      "start": [
+        "command",
+        "industry",
+        "powerStation"
+      ]
+    },
+    {
+      "id": "B-heartland",
+      "name": "B Heartland",
+      "role": "heartland",
+      "terrain": "plains",
+      "homeOf": "B",
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          750,
+          350
+        ],
+        [
+          850,
+          350
+        ],
+        [
+          750,
+          450
+        ],
+        [
+          850,
+          450
+        ]
+      ],
+      "garrison": [
+        800,
+        400
+      ],
+      "shape": [
+        [
+          700,
+          300
+        ],
+        [
+          900,
+          300
+        ],
+        [
+          900,
+          500
+        ],
+        [
+          700,
+          500
+        ]
+      ],
+      "land": [
+        "B-port",
+        "B-uplands",
+        "E-lakeshore",
+        "N-lakeshore"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": [
+        "farm:irrigation",
+        "waterworks:expansion"
+      ]
+    },
+    {
+      "id": "B-port",
+      "name": "B Port",
+      "role": "port",
+      "terrain": "plains",
+      "homeOf": "B",
+      "population": 1,
+      "features": [],
+      "sites": [
+        [
+          750,
+          150
+        ],
+        [
+          850,
+          150
+        ],
+        [
+          750,
+          250
+        ],
+        [
+          850,
+          250
+        ]
+      ],
+      "garrison": [
+        800,
+        200
+      ],
+      "shape": [
+        [
+          700,
+          100
+        ],
+        [
+          900,
+          100
+        ],
+        [
+          900,
+          300
+        ],
+        [
+          700,
+          300
+        ]
+      ],
+      "land": [
+        "B-capital",
+        "B-heartland",
+        "N-frontier"
+      ],
+      "sea": [
+        "sea-N",
+        "sea-NE"
+      ],
+      "start": [
+        "depot"
+      ]
+    },
+    {
+      "id": "B-uplands",
+      "name": "B Uplands",
+      "role": "uplands",
+      "terrain": "hills",
+      "homeOf": "B",
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          950,
+          350
+        ],
+        [
+          1050,
+          350
+        ],
+        [
+          950,
+          450
+        ],
+        [
+          1050,
+          450
+        ]
+      ],
+      "garrison": [
+        1000,
+        400
+      ],
+      "shape": [
+        [
+          900,
+          300
+        ],
+        [
+          1100,
+          300
+        ],
+        [
+          1100,
+          500
+        ],
+        [
+          900,
+          500
+        ]
+      ],
+      "land": [
+        "B-capital",
+        "B-heartland",
+        "E-frontier"
+      ],
+      "sea": [
+        "sea-E",
+        "sea-NE"
+      ],
+      "start": [
+        "industry"
+      ]
+    },
+    {
+      "id": "C-capital",
+      "name": "C Capital",
+      "role": "capital",
+      "terrain": "urban",
+      "homeOf": "C",
+      "population": 3,
+      "features": [
+        "water"
+      ],
+      "sites": [
+        [
+          950,
+          950
+        ],
+        [
+          1050,
+          950
+        ],
+        [
+          950,
+          1050
+        ],
+        [
+          1050,
+          1050
+        ]
+      ],
+      "garrison": [
+        1000,
+        1000
+      ],
+      "shape": [
+        [
+          900,
+          900
+        ],
+        [
+          1100,
+          900
+        ],
+        [
+          1100,
+          1100
+        ],
+        [
+          900,
+          1100
+        ]
+      ],
+      "land": [
+        "C-port",
+        "C-uplands"
+      ],
+      "sea": [
+        "sea-SE"
+      ],
+      "start": [
+        "command",
+        "industry",
+        "powerStation"
+      ]
+    },
+    {
+      "id": "C-heartland",
+      "name": "C Heartland",
+      "role": "heartland",
+      "terrain": "plains",
+      "homeOf": "C",
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          750,
+          750
+        ],
+        [
+          850,
+          750
+        ],
+        [
+          750,
+          850
+        ],
+        [
+          850,
+          850
+        ]
+      ],
+      "garrison": [
+        800,
+        800
+      ],
+      "shape": [
+        [
+          700,
+          700
+        ],
+        [
+          900,
+          700
+        ],
+        [
+          900,
+          900
+        ],
+        [
+          700,
+          900
+        ]
+      ],
+      "land": [
+        "C-port",
+        "C-uplands",
+        "E-lakeshore",
+        "S-lakeshore"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": [
+        "farm:irrigation",
+        "waterworks:expansion"
+      ]
+    },
+    {
+      "id": "C-port",
+      "name": "C Port",
+      "role": "port",
+      "terrain": "plains",
+      "homeOf": "C",
+      "population": 1,
+      "features": [],
+      "sites": [
+        [
+          750,
+          950
+        ],
+        [
+          850,
+          950
+        ],
+        [
+          750,
+          1050
+        ],
+        [
+          850,
+          1050
+        ]
+      ],
+      "garrison": [
+        800,
+        1000
+      ],
+      "shape": [
+        [
+          700,
+          900
+        ],
+        [
+          900,
+          900
+        ],
+        [
+          900,
+          1100
+        ],
+        [
+          700,
+          1100
+        ]
+      ],
+      "land": [
+        "C-capital",
+        "C-heartland",
+        "S-frontier"
+      ],
+      "sea": [
+        "sea-S",
+        "sea-SE"
+      ],
+      "start": [
+        "depot"
+      ]
+    },
+    {
+      "id": "C-uplands",
+      "name": "C Uplands",
+      "role": "uplands",
+      "terrain": "hills",
+      "homeOf": "C",
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          950,
+          750
+        ],
+        [
+          1050,
+          750
+        ],
+        [
+          950,
+          850
+        ],
+        [
+          1050,
+          850
+        ]
+      ],
+      "garrison": [
+        1000,
+        800
+      ],
+      "shape": [
+        [
+          900,
+          700
+        ],
+        [
+          1100,
+          700
+        ],
+        [
+          1100,
+          900
+        ],
+        [
+          900,
+          900
+        ]
+      ],
+      "land": [
+        "C-capital",
+        "C-heartland",
+        "E-frontier"
+      ],
+      "sea": [
+        "sea-E",
+        "sea-SE"
+      ],
+      "start": [
+        "industry"
+      ]
+    },
+    {
+      "id": "D-capital",
+      "name": "D Capital",
+      "role": "capital",
+      "terrain": "urban",
+      "homeOf": "D",
+      "population": 3,
+      "features": [
+        "water"
+      ],
+      "sites": [
+        [
+          150,
+          950
+        ],
+        [
+          250,
+          950
+        ],
+        [
+          150,
+          1050
+        ],
+        [
+          250,
+          1050
+        ]
+      ],
+      "garrison": [
+        200,
+        1000
+      ],
+      "shape": [
+        [
+          100,
+          900
+        ],
+        [
+          300,
+          900
+        ],
+        [
+          300,
+          1100
+        ],
+        [
+          100,
+          1100
+        ]
+      ],
+      "land": [
+        "D-port",
+        "D-uplands"
+      ],
+      "sea": [
+        "sea-SW"
+      ],
+      "start": [
+        "command",
+        "industry",
+        "powerStation"
+      ]
+    },
+    {
+      "id": "D-heartland",
+      "name": "D Heartland",
+      "role": "heartland",
+      "terrain": "plains",
+      "homeOf": "D",
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          350,
+          750
+        ],
+        [
+          450,
+          750
+        ],
+        [
+          350,
+          850
+        ],
+        [
+          450,
+          850
+        ]
+      ],
+      "garrison": [
+        400,
+        800
+      ],
+      "shape": [
+        [
+          300,
+          700
+        ],
+        [
+          500,
+          700
+        ],
+        [
+          500,
+          900
+        ],
+        [
+          300,
+          900
+        ]
+      ],
+      "land": [
+        "D-port",
+        "D-uplands",
+        "S-lakeshore",
+        "W-lakeshore"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": [
+        "farm:irrigation",
+        "waterworks:expansion"
+      ]
+    },
+    {
+      "id": "D-port",
+      "name": "D Port",
+      "role": "port",
+      "terrain": "plains",
+      "homeOf": "D",
+      "population": 1,
+      "features": [],
+      "sites": [
+        [
+          350,
+          950
+        ],
+        [
+          450,
+          950
+        ],
+        [
+          350,
+          1050
+        ],
+        [
+          450,
+          1050
+        ]
+      ],
+      "garrison": [
+        400,
+        1000
+      ],
+      "shape": [
+        [
+          300,
+          900
+        ],
+        [
+          500,
+          900
+        ],
+        [
+          500,
+          1100
+        ],
+        [
+          300,
+          1100
+        ]
+      ],
+      "land": [
+        "D-capital",
+        "D-heartland",
+        "S-frontier"
+      ],
+      "sea": [
+        "sea-S",
+        "sea-SW"
+      ],
+      "start": [
+        "depot"
+      ]
+    },
+    {
+      "id": "D-uplands",
+      "name": "D Uplands",
+      "role": "uplands",
+      "terrain": "hills",
+      "homeOf": "D",
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          150,
+          750
+        ],
+        [
+          250,
+          750
+        ],
+        [
+          150,
+          850
+        ],
+        [
+          250,
+          850
+        ]
+      ],
+      "garrison": [
+        200,
+        800
+      ],
+      "shape": [
+        [
+          100,
+          700
+        ],
+        [
+          300,
+          700
+        ],
+        [
+          300,
+          900
+        ],
+        [
+          100,
+          900
+        ]
+      ],
+      "land": [
+        "D-capital",
+        "D-heartland",
+        "W-frontier"
+      ],
+      "sea": [
+        "sea-SW",
+        "sea-W"
+      ],
+      "start": [
+        "industry"
+      ]
+    },
+    {
+      "id": "E-frontier",
+      "name": "E Frontier",
+      "role": "frontier",
+      "terrain": "forest",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "timber"
+      ],
+      "sites": [
+        [
+          950,
+          550
+        ],
+        [
+          1050,
+          550
+        ],
+        [
+          950,
+          650
+        ],
+        [
+          1050,
+          650
+        ]
+      ],
+      "garrison": [
+        1000,
+        600
+      ],
+      "shape": [
+        [
+          900,
+          500
+        ],
+        [
+          1100,
+          500
+        ],
+        [
+          1100,
+          700
+        ],
+        [
+          900,
+          700
+        ]
+      ],
+      "land": [
+        "B-uplands",
+        "C-uplands",
+        "E-lakeshore"
+      ],
+      "sea": [
+        "sea-E"
+      ],
+      "start": []
+    },
+    {
+      "id": "E-lakeshore",
+      "name": "E Lakeshore",
+      "role": "lakeshore",
+      "terrain": "plains",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          750,
+          550
+        ],
+        [
+          850,
+          550
+        ],
+        [
+          750,
+          650
+        ],
+        [
+          850,
+          650
+        ]
+      ],
+      "garrison": [
+        800,
+        600
+      ],
+      "shape": [
+        [
+          700,
+          500
+        ],
+        [
+          900,
+          500
+        ],
+        [
+          900,
+          700
+        ],
+        [
+          700,
+          700
+        ]
+      ],
+      "land": [
+        "B-heartland",
+        "C-heartland",
+        "E-frontier"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": []
+    },
+    {
+      "id": "N-frontier",
+      "name": "N Frontier",
+      "role": "frontier",
+      "terrain": "hills",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          550,
+          150
+        ],
+        [
+          650,
+          150
+        ],
+        [
+          550,
+          250
+        ],
+        [
+          650,
+          250
+        ]
+      ],
+      "garrison": [
+        600,
+        200
+      ],
+      "shape": [
+        [
+          500,
+          100
+        ],
+        [
+          700,
+          100
+        ],
+        [
+          700,
+          300
+        ],
+        [
+          500,
+          300
+        ]
+      ],
+      "land": [
+        "A-port",
+        "B-port",
+        "N-lakeshore"
+      ],
+      "sea": [
+        "sea-N"
+      ],
+      "start": []
+    },
+    {
+      "id": "N-lakeshore",
+      "name": "N Lakeshore",
+      "role": "lakeshore",
+      "terrain": "plains",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          550,
+          350
+        ],
+        [
+          650,
+          350
+        ],
+        [
+          550,
+          450
+        ],
+        [
+          650,
+          450
+        ]
+      ],
+      "garrison": [
+        600,
+        400
+      ],
+      "shape": [
+        [
+          500,
+          300
+        ],
+        [
+          700,
+          300
+        ],
+        [
+          700,
+          500
+        ],
+        [
+          500,
+          500
+        ]
+      ],
+      "land": [
+        "A-heartland",
+        "B-heartland",
+        "N-frontier"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": []
+    },
+    {
+      "id": "S-frontier",
+      "name": "S Frontier",
+      "role": "frontier",
+      "terrain": "hills",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "ore"
+      ],
+      "sites": [
+        [
+          550,
+          950
+        ],
+        [
+          650,
+          950
+        ],
+        [
+          550,
+          1050
+        ],
+        [
+          650,
+          1050
+        ]
+      ],
+      "garrison": [
+        600,
+        1000
+      ],
+      "shape": [
+        [
+          500,
+          900
+        ],
+        [
+          700,
+          900
+        ],
+        [
+          700,
+          1100
+        ],
+        [
+          500,
+          1100
+        ]
+      ],
+      "land": [
+        "C-port",
+        "D-port",
+        "S-lakeshore"
+      ],
+      "sea": [
+        "sea-S"
+      ],
+      "start": []
+    },
+    {
+      "id": "S-lakeshore",
+      "name": "S Lakeshore",
+      "role": "lakeshore",
+      "terrain": "plains",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          550,
+          750
+        ],
+        [
+          650,
+          750
+        ],
+        [
+          550,
+          850
+        ],
+        [
+          650,
+          850
+        ]
+      ],
+      "garrison": [
+        600,
+        800
+      ],
+      "shape": [
+        [
+          500,
+          700
+        ],
+        [
+          700,
+          700
+        ],
+        [
+          700,
+          900
+        ],
+        [
+          500,
+          900
+        ]
+      ],
+      "land": [
+        "C-heartland",
+        "D-heartland",
+        "S-frontier"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": []
+    },
+    {
+      "id": "W-frontier",
+      "name": "W Frontier",
+      "role": "frontier",
+      "terrain": "forest",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "timber"
+      ],
+      "sites": [
+        [
+          150,
+          550
+        ],
+        [
+          250,
+          550
+        ],
+        [
+          150,
+          650
+        ],
+        [
+          250,
+          650
+        ]
+      ],
+      "garrison": [
+        200,
+        600
+      ],
+      "shape": [
+        [
+          100,
+          500
+        ],
+        [
+          300,
+          500
+        ],
+        [
+          300,
+          700
+        ],
+        [
+          100,
+          700
+        ]
+      ],
+      "land": [
+        "A-uplands",
+        "D-uplands",
+        "W-lakeshore"
+      ],
+      "sea": [
+        "sea-W"
+      ],
+      "start": []
+    },
+    {
+      "id": "W-lakeshore",
+      "name": "W Lakeshore",
+      "role": "lakeshore",
+      "terrain": "plains",
+      "homeOf": null,
+      "population": 1,
+      "features": [
+        "farmland",
+        "water"
+      ],
+      "sites": [
+        [
+          350,
+          550
+        ],
+        [
+          450,
+          550
+        ],
+        [
+          350,
+          650
+        ],
+        [
+          450,
+          650
+        ]
+      ],
+      "garrison": [
+        400,
+        600
+      ],
+      "shape": [
+        [
+          300,
+          500
+        ],
+        [
+          500,
+          500
+        ],
+        [
+          500,
+          700
+        ],
+        [
+          300,
+          700
+        ]
+      ],
+      "land": [
+        "A-heartland",
+        "D-heartland",
+        "W-frontier"
+      ],
+      "sea": [
+        "sea-inland"
+      ],
+      "start": []
+    }
+  ],
+  "seaZones": [
+    {
+      "id": "sea-E",
+      "name": "East Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-NE",
+        "sea-SE"
+      ],
+      "center": [
+        1150,
+        600
+      ],
+      "shape": [
+        [
+          1100,
+          300
+        ],
+        [
+          1200,
+          300
+        ],
+        [
+          1200,
+          900
+        ],
+        [
+          1100,
+          900
+        ]
+      ]
+    },
+    {
+      "id": "sea-N",
+      "name": "North Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-NE",
+        "sea-NW"
+      ],
+      "center": [
+        600,
+        50
+      ],
+      "shape": [
+        [
+          300,
+          0
+        ],
+        [
+          900,
+          0
+        ],
+        [
+          900,
+          100
+        ],
+        [
+          300,
+          100
+        ]
+      ]
+    },
+    {
+      "id": "sea-NE",
+      "name": "Northeast Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-E",
+        "sea-N"
+      ],
+      "center": [
+        1150,
+        50
+      ],
+      "shape": [
+        [
+          900,
+          0
+        ],
+        [
+          1200,
+          0
+        ],
+        [
+          1200,
+          300
+        ],
+        [
+          1100,
+          300
+        ],
+        [
+          1100,
+          100
+        ],
+        [
+          900,
+          100
+        ]
+      ]
+    },
+    {
+      "id": "sea-NW",
+      "name": "Northwest Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-N",
+        "sea-W"
+      ],
+      "center": [
+        50,
+        50
+      ],
+      "shape": [
+        [
+          0,
+          0
+        ],
+        [
+          300,
+          0
+        ],
+        [
+          300,
+          100
+        ],
+        [
+          100,
+          100
+        ],
+        [
+          100,
+          300
+        ],
+        [
+          0,
+          300
+        ]
+      ]
+    },
+    {
+      "id": "sea-S",
+      "name": "South Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-SE",
+        "sea-SW"
+      ],
+      "center": [
+        600,
+        1150
+      ],
+      "shape": [
+        [
+          300,
+          1100
+        ],
+        [
+          900,
+          1100
+        ],
+        [
+          900,
+          1200
+        ],
+        [
+          300,
+          1200
+        ]
+      ]
+    },
+    {
+      "id": "sea-SE",
+      "name": "Southeast Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-E",
+        "sea-S"
+      ],
+      "center": [
+        1150,
+        1150
+      ],
+      "shape": [
+        [
+          1100,
+          900
+        ],
+        [
+          1200,
+          900
+        ],
+        [
+          1200,
+          1200
+        ],
+        [
+          900,
+          1200
+        ],
+        [
+          900,
+          1100
+        ],
+        [
+          1100,
+          1100
+        ]
+      ]
+    },
+    {
+      "id": "sea-SW",
+      "name": "Southwest Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-S",
+        "sea-W"
+      ],
+      "center": [
+        50,
+        1150
+      ],
+      "shape": [
+        [
+          0,
+          900
+        ],
+        [
+          100,
+          900
+        ],
+        [
+          100,
+          1100
+        ],
+        [
+          300,
+          1100
+        ],
+        [
+          300,
+          1200
+        ],
+        [
+          0,
+          1200
+        ]
+      ]
+    },
+    {
+      "id": "sea-W",
+      "name": "West Ocean",
+      "kind": "ocean",
+      "adjacentSea": [
+        "sea-NW",
+        "sea-SW"
+      ],
+      "center": [
+        50,
+        600
+      ],
+      "shape": [
+        [
+          0,
+          300
+        ],
+        [
+          100,
+          300
+        ],
+        [
+          100,
+          900
+        ],
+        [
+          0,
+          900
+        ]
+      ]
+    },
+    {
+      "id": "sea-inland",
+      "name": "Inland Sea",
+      "kind": "inland",
+      "adjacentSea": [],
+      "center": [
+        600,
+        600
+      ],
+      "shape": [
+        [
+          500,
+          500
+        ],
+        [
+          700,
+          500
+        ],
+        [
+          700,
+          700
+        ],
+        [
+          500,
+          700
+        ]
+      ]
+    }
+  ],
+  "playerCounts": {
+    "2": {
+      "homes": [
+        "A",
+        "C"
+      ]
+    },
+    "3": {
+      "homes": [
+        "A",
+        "B",
+        "C"
+      ]
+    },
+    "4": {
+      "homes": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    }
+  }
+}

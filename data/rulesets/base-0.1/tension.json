@@ -1,0 +1,151 @@
+{
+  "start": 10,
+  "max": 100,
+  "bands": {
+    "openCrisis": 40,
+    "crisisVote": 80,
+    "releaseOpen": 100
+  },
+  "openCrisisCardBonus": 2,
+  "floorCap": 90,
+  "posturePoints": {
+    "silo": 6,
+    "submarine": 6,
+    "warheads": 2,
+    "bomber": 3,
+    "gravityBombs": 1
+  },
+  "postureBands": [
+    {
+      "name": "low",
+      "min": 0
+    },
+    {
+      "name": "moderate",
+      "min": 10
+    },
+    {
+      "name": "high",
+      "min": 30
+    },
+    {
+      "name": "extreme",
+      "min": 60
+    }
+  ],
+  "buildupSpikes": {
+    "silo": 8,
+    "submarine": 8,
+    "warheads": 5,
+    "bomber": 4,
+    "gravityBombs": 3
+  },
+  "aggression": {
+    "declareWar": {
+      "tension": 12,
+      "blame": 2
+    },
+    "operationWhileAtWar": 2,
+    "conventionalMissileRaid": 3,
+    "civilianTarget": {
+      "tension": 3,
+      "blame": 1
+    },
+    "captureStartingTerritory": 5,
+    "firstNuclearLaunch": {
+      "blame": 8,
+      "infamy": 10
+    },
+    "laterNuclearPopulationStrikeBlame": 3
+  },
+  "cooling": {
+    "noCombat": 4,
+    "conventionalOnly": 1,
+    "nuclear": 0
+  },
+  "blame": {
+    "decayPerQuietUpkeep": 1,
+    "pariahThreshold": 10,
+    "leavePariahTreatyBlame": -1
+  },
+  "infamy": {
+    "perBlame": 1,
+    "scorePenaltyEvery": 3
+  },
+  "pariahWar": {
+    "tension": 4,
+    "blame": 0
+  },
+  "honorCall": {
+    "tension": 4,
+    "blame": 0,
+    "declineHostility": 2
+  },
+  "hostility": {
+    "max": 10
+  },
+  "treaties": {
+    "breach": {
+      "tension": 10,
+      "blame": 3,
+      "hostility": 3
+    },
+    "resignCooldownRounds": 3,
+    "kinds": {
+      "nonAggression": {
+        "signingTension": -3,
+        "durationRounds": null
+      },
+      "defensive": {
+        "signingTension": 0,
+        "durationRounds": null
+      },
+      "trade": {
+        "signingTension": -2,
+        "durationRounds": null
+      },
+      "ceasefire": {
+        "signingTension": -8,
+        "durationRounds": 3
+      },
+      "armsControl": {
+        "signingTension": -6,
+        "durationRounds": null
+      },
+      "moratorium": {
+        "signingTension": 0,
+        "durationRounds": null
+      },
+      "settlement": {
+        "signingTension": 0,
+        "durationRounds": null
+      }
+    },
+    "mediatedBreachExtraBlame": 2
+  },
+  "missions": {
+    "peaceEnvoy": {
+      "tension": -4,
+      "hostility": -2
+    },
+    "mediation": {
+      "tension": -8,
+      "ceasefireRounds": 3,
+      "brokerTokens": 1,
+      "cards": 2,
+      "blame": -3,
+      "infamy": -3
+    },
+    "openVerification": {
+      "tension": -3
+    }
+  },
+  "disarmamentSpikePermille": 500,
+  "vote": {
+    "authorizeBlame": 1,
+    "rollOffDie": 6
+  },
+  "aftermath": {
+    "moratoriumBreachBlame": 10
+  }
+}

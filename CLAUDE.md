@@ -9,9 +9,22 @@ Technical Architecture spec there is the source of truth for code structure.
 - `pnpm check` — everything CI runs: format check, lint, typecheck, tests, harness smoke run
 - `pnpm test` / `pnpm test:watch` — Vitest across all packages
 - `pnpm lint`, `pnpm typecheck`, `pnpm format`
-- `pnpm smoke` — headless harness smoke run
+- `pnpm smoke` — headless harness smoke run (also loads all game data)
+- `pnpm gen:maps` — regenerate `data/maps/` from the generators in `packages/harness/src/maps/`
 
 Run `pnpm check` before every commit.
+
+## Data
+
+- `data/rulesets/<id>/` — tunable numbers, validated by the Zod schemas in `packages/core/src/data/`
+- `data/maps/` — generated; never edit by hand (a test checks it matches its generator)
+- `data/cards/` — card definitions
+
+## CI
+
+GitHub Actions bills a minimum of one minute per job, so CI runs as a single job and only on
+non-draft pull requests and pushes to `main` (not on branch pushes, not for docs-only changes).
+Don't add workflows or split jobs without a good reason; run checks locally instead.
 
 ## Packages
 

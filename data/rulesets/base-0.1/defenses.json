@@ -1,0 +1,58 @@
+{
+  "refillSuppliesPerBattery": 1,
+  "defenses": {
+    "gunBattery": {
+      "cost": 3,
+      "powerDraw": 1,
+      "range": 120,
+      "engages": ["air", "missile"],
+      "firing": "hold",
+      "intervalMs": 500,
+      "projectileSpeed": 300,
+      "burstRadius": 10,
+      "damage": 1,
+      "destroysOnHit": false,
+      "magazine": 40
+    },
+    "burstInterceptor": {
+      "cost": 5,
+      "powerDraw": 1,
+      "range": 250,
+      "engages": ["air", "missile", "strategic-terminal"],
+      "firing": "point",
+      "intervalMs": 2000,
+      "projectileSpeed": 150,
+      "burstRadius": 30,
+      "damage": 2,
+      "destroysOnHit": false,
+      "magazine": 6
+    },
+    "precisionInterceptor": {
+      "cost": 6,
+      "powerDraw": 1,
+      "range": 300,
+      "engages": ["missile", "strategic-terminal"],
+      "firing": "homing",
+      "intervalMs": 3000,
+      "projectileSpeed": 200,
+      "burstRadius": 0,
+      "damage": 0,
+      "destroysOnHit": true,
+      "magazine": 4
+    },
+    "highAltitudeScreen": {
+      "cost": 8,
+      "powerDraw": 2,
+      "range": 400,
+      "engages": ["strategic-midcourse"],
+      "firing": "automatic",
+      "intervalMs": 0,
+      "projectileSpeed": 0,
+      "burstRadius": 0,
+      "damage": 0,
+      "destroysOnHit": true,
+      "magazine": null,
+      "engagementsPerWindow": 2
+    }
+  }
+}
