@@ -56,7 +56,8 @@
       },
       "featureBonus": {
         "ore": 1
-      }
+      },
+      "defaultMode": "construction"
     },
     "farm": {
       "cost": 4,
@@ -143,7 +144,8 @@
         "domestic": {
           "counterIntel": 3
         }
-      }
+      },
+      "defaultMode": "foreign"
     },
     "airfield": {
       "cost": 6,
@@ -167,5 +169,18 @@
       "missileCapacity": 2,
       "supplyUpkeep": 1
     }
-  }
+  },
+  "powerPriority": [
+    "waterworks",
+    "command",
+    "radar",
+    "highAltitudeScreen",
+    "precisionInterceptor",
+    "burstInterceptor",
+    "gunBattery",
+    "missileLauncher",
+    "airfield",
+    "industry",
+    "bureau"
+  ]
 }

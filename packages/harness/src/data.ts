@@ -7,10 +7,12 @@ import {
   parseDeck,
   parseMap,
   parseRuleset,
+  parseScenario,
   type DeckDef,
   type MapDef,
   type Ruleset,
   type RulesetFiles,
+  type ScenarioDef,
   type TuningPatch,
 } from '@nukka/core';
 
@@ -69,4 +71,13 @@ export function loadDeck(id: string): DeckDef {
 
 export function listRulesets(): string[] {
   return readdirSync(join(DATA_DIR, 'rulesets')).sort();
+}
+
+export function loadScenario(id: string, ruleset: Ruleset, map: MapDef): ScenarioDef {
+  return parseScenario(
+    readJson(join(DATA_DIR, 'scenarios', `${id}.json`)),
+    ruleset,
+    map,
+    `scenario ${id}`,
+  );
 }

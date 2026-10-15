@@ -3,7 +3,7 @@
  * Concrete command types are added as each rule system is built.
  */
 
-export type PlayerId = string;
+import type { PlayerId } from './engine/state.js';
 
 export interface CommandEnvelope<C = unknown> {
   readonly matchId: string;

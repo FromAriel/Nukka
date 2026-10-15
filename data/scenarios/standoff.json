@@ -1,0 +1,48 @@
+{
+  "id": "standoff",
+  "name": "Standoff",
+  "description": "Cold start plus one loaded silo per country.",
+  "homes": {
+    "capital": {
+      "installations": [
+        {
+          "kind": "radar"
+        }
+      ]
+    },
+    "port": {
+      "installations": [
+        {
+          "kind": "airfield"
+        },
+        {
+          "kind": "gunBattery"
+        }
+      ],
+      "units": {
+        "aircraft": 1
+      }
+    },
+    "heartland": {
+      "installations": [
+        {
+          "kind": "gunBattery"
+        }
+      ],
+      "units": {
+        "groundFormation": 3
+      }
+    },
+    "uplands": {
+      "installations": [
+        {
+          "kind": "silo",
+          "loaded": {
+            "warheads": 2
+          }
+        }
+      ]
+    }
+  },
+  "stock": {}
+}

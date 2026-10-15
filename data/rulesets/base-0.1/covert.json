@@ -1,9 +1,4 @@
 {
-  "income": {
-    "command": 1,
-    "bureauForeign": 2
-  },
-  "bureauDomesticCounterIntel": 3,
   "shadowSlots": {
     "base": 1,
     "withBureau": 2

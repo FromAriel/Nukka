@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { sortedKeys } from '../collections.js';
 import { stateHash } from '../hash.js';
 import {
   feature,
@@ -58,6 +59,7 @@ const installationSchema = z.strictObject({
   modes: z
     .record(z.string(), resourceAmounts.and(z.object({ counterIntel: nonNeg().optional() })))
     .optional(),
+  defaultMode: z.string().optional(),
   featureBonus: z.partialRecord(feature, int()).optional(),
   upgrade: upgradeSchema.optional(),
   maxPerCountry: pos().optional(),
@@ -103,6 +105,8 @@ export const economySchema = z.strictObject({
     intelligence: nonNeg(),
   }),
   installations: z.record(z.string(), installationSchema),
+  /** Installations keep power in this order when a grid is short; unlisted kinds go last. */
+  powerPriority: z.array(z.string()),
 });
 
 // ---------------------------------------------------------------- units
@@ -246,8 +250,7 @@ export const tensionSchema = z.strictObject({
 // ---------------------------------------------------------------- covert
 
 export const covertSchema = z.strictObject({
-  income: z.strictObject({ command: nonNeg(), bureauForeign: nonNeg() }),
-  bureauDomesticCounterIntel: nonNeg(),
+  // Intelligence income comes from economy.government and the command/bureau installations.
   shadowSlots: z.strictObject({ base: pos(), withBureau: pos() }),
   fuse: z.strictObject({ minRounds: pos(), maxRounds: pos(), preciseTimingCost: nonNeg() }),
   boost: z.strictObject({ perIp: pos(), maxBonus: nonNeg() }),
@@ -386,6 +389,17 @@ function crossCheckRuleset(ruleset: Ruleset): string[] {
     ...Object.getOwnPropertyNames(tension.buildupSpikes),
   ]) {
     if (!known.has(name)) problems.push(`tension: unknown asset "${name}"`);
+  }
+  for (const kind of sortedKeys(economy.installations)) {
+    const rules = economy.installations[kind]!;
+    if (rules.modes && (rules.defaultMode === undefined || !(rules.defaultMode in rules.modes))) {
+      problems.push(`economy.installations.${kind}: needs a defaultMode naming one of its modes`);
+    }
+  }
+  for (const name of economy.powerPriority) {
+    if (!(name in economy.installations) && !(name in ruleset.defenses.defenses)) {
+      problems.push(`economy.powerPriority: unknown installation "${name}"`);
+    }
   }
   for (const name of ruleset.scoring.civilianInstallationKinds) {
     if (!(name in economy.installations)) problems.push(`scoring: unknown installation "${name}"`);

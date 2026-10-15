@@ -142,7 +142,7 @@ Both use a development order. Clearing a ruined site to build something else cos
 | Food | 6 | 6 | **0** |
 | Water | 6 | 6 | **0** |
 | Supplies | 2 (government) | 4 (3 ground + 1 aircraft formation, standard scenario) | **−2** |
-| Power | 8 | 4 (command, 2 industry, waterworks) + 3 (radar, 2 gun batteries) | **1 spare** |
+| Power | 8 | 4 (command, 2 industry, waterworks) + 4 (radar, airfield, 2 gun batteries) | **0 spare** |
 | Intelligence | 2 + 1 = 3 | — | **+3** |
 
 **Starting reserves:** 6 P, 6 F, 6 W, 8 S, 2 IP.
@@ -150,7 +150,7 @@ Both use a development order. Clearing a ruined site to build something else cos
 Read the starting position this way:
 - **Food and water are exactly balanced.** The capital's water source is unused, so building a second waterworks there is the obvious insurance against a strike on the Heartland.
 - **Supplies run down.** The standard starting military drains 2 per round. After about 4 rounds the player must move an industry to Supply mode, build more industry, or cut the army. Supply mode is deliberately more efficient: switching the Uplands industry gives +5 supplies for −4 production.
-- **Power is nearly full.** Almost any new powered building needs a second power station first.
+- **Power is full.** Any new powered building needs a second power station first.
 
 ### 6.2 Starting score
 
@@ -218,8 +218,10 @@ For scoring, **civilian installations** are industry, farms, waterworks, power s
 
 | Scenario | Starting military | Starting nuclear |
 |---|---|---|
-| **Cold start** (default for testing) | 3 ground formations, 1 aircraft formation, 1 radar, 2 gun batteries | None |
-| **Standoff** | As Cold start, plus 1 airfield | 1 silo with 2 warheads loaded. Starting tension and floor are calculated from this. |
+| **Cold start** (default for testing) | 3 ground formations (Heartland), 1 aircraft formation and 1 airfield (Port), 1 radar (Capital), 2 gun batteries (Port, Heartland) | None |
+| **Standoff** | As Cold start | 1 silo (Uplands) with 2 warheads loaded. Starting tension and floor are calculated from this. |
+
+Scenarios are data files in `data/scenarios/`.
 
 ## 11. Interface
 
