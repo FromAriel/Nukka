@@ -43,15 +43,26 @@ Each nuclear-capable asset a player owns contributes **posture points (PP)**:
 | Nuclear-capable bomber formation | 3 | |
 | Nuclear gravity bomb | 1 | |
 
-**Floor F = total world PP ÷ number of starting players, rounded down, capped at 75.**
+**Floor F = total world PP ÷ number of starting players, rounded down, capped at 90.**
 
-Dividing by player count lets the same formula work at 2–4 players. The cap at 75 means building alone can never reach the crisis vote at 80; it takes an act to get there.
+Dividing by player count lets the same formula work at 2–4 players. The cap is a scenario setting, and the default of 90 means a large enough arms race can push the world into the crisis vote band (80+) by itself, with no war declared. The floor alone can never reach 100, so a vote is always still required.
 
-Example: four players, each with 2 silos, 1 submarine, 6 warheads, 2 bombers and 4 bombs = 12 + 6 + 12 + 6 + 4 = **40 PP each**. The floor is 40, so the world is permanently in open crisis until somebody disarms.
+Example: four players, each with 2 silos, 1 submarine, 6 warheads, 2 bombers and 4 bombs = 12 + 6 + 12 + 6 + 4 = **40 PP each**. The floor is 40, so the world is permanently in open crisis until somebody disarms. If they all double that arsenal, the floor reaches 80 and a crisis vote is held every round.
 
-Each player's PP total is **public** as a single number; intelligence agencies track postures. The breakdown (how many warheads, which silos are loaded) is not public; see §6 on spying.
+### 2.3 Public posture bands
 
-### 2.3 Buildup spikes
+Intelligence agencies track each other's postures, so every player's posture is **public as a band**:
+
+| Band | Player PP |
+|---|---|
+| Low | 0–9 |
+| Moderate | 10–29 |
+| High | 30–59 |
+| Extreme | 60+ |
+
+Hovering over the band shows the exact PP total. The breakdown (how many warheads, which silos are loaded, where submarines are) is not public; see §6 on spying. Assets built under *Covert Program* (§6) are not included until revealed.
+
+### 2.4 Buildup spikes
 
 Each development order that adds nuclear capability also adds a one-time spike, attributed to the builder:
 
@@ -92,7 +103,8 @@ Declaring a hostile operation (ground assault, air raid, missile raid, interdict
 | Capture another player's starting territory | +5 | — |
 | Break a treaty (§5.3) | +10 | +3 |
 | Vote Authorize in a crisis vote | +0 | +1 |
-| First nuclear launch in the match | Set T to 100; release becomes permanently available (§7) | +5 |
+| First nuclear launch in the match | Set T to 100; release becomes permanently available (§7) | +8, plus +10 infamy (§4.1) |
+| Any later nuclear strike on a population center | — | +3 |
 
 Declaring war does not make nuclear war automatic. It moves the whole world much closer.
 
@@ -117,12 +129,28 @@ A canceled aggressive card still applies its printed tension unless the card say
 
 These are separate from tension. Tension is global; blame and hostility are about specific players.
 
-**Blame** is a public number for each player. It accumulates from the Blame column above and from card text. It falls by 1 at each upkeep in which that player gained no new blame.
+### 4.1 Blame and infamy
 
-Blame does not change score. It:
+**Blame** is a public number for each player. It accumulates from the Blame column above and from card text. It falls by 1 at each upkeep in which that player gained no new blame. Current blame is political: it
 - weights AI target selection and its willingness to join coalitions against a high-blame player,
 - unlocks cards that need a blamed target (for example, *Sanctions* requires the target to have blame 5 or more),
 - is shown on the crisis screen next to each country.
+
+**Infamy** is the permanent record. Every point of blame a player gains also adds 1 infamy, and infamy never decays. The first nuclear launch adds a further +10 infamy. Infamy costs score at the end of the match:
+
+**Infamy penalty = −1 score for every 3 infamy, rounded down.**
+
+So the player who burns the world down gets to launch, but pays for it twice: everyone turns on them now, and the final score remembers it. Mediation is the only way to reduce infamy (§5.2).
+
+### 4.2 Pariah status
+
+A player with current blame of **10 or more** is a **pariah** until their blame falls below 10:
+
+- AI players strongly prioritize a pariah as a target and readily join coalitions against them.
+- Any player may declare war on a pariah at **+4 tension and no blame**, the same rate as an honor call (§5.4).
+- Cards may require a pariah target (for example, *Global Embargo*).
+
+A first nuclear launch (+8 blame) plus almost any other aggression makes the launcher a pariah.
 
 **Hostility** is a directed 0–10 value per pair of players: how much A resents B. It rises when B harms A and falls through treaties and diplomacy. It mainly drives AI behavior. Humans see it but are never forced by it (main design §5).
 
@@ -143,8 +171,10 @@ A declined proposal has no cost beyond the main action spent.
 | Mission | Effect if accepted | Tension |
 |---|---|---|
 | **Peace envoy** | Both players' hostility toward each other −2 | −4 |
-| **Mediation** (target two players at war with each other) | Both must accept. They enter a 3-round ceasefire. The mediator's blame −2 and the mediator draws 1 card. | −8 |
+| **Mediation** (target two players at war with each other) | Both must accept. They enter a 3-round ceasefire. The mediator gains a **Peace Broker** token worth +3 score, draws 2 cards, and reduces their blame and infamy by 3 each. | −8 |
 | **Open verification** (invite a rival to inspect you) | The rival sees your full nuclear breakdown | −3 |
+
+The mediator keeps the Peace Broker token even if the ceasefire is later broken. Whoever breaks a mediated ceasefire takes the normal treaty-breach penalties plus +2 more blame.
 
 ### 5.3 Treaties
 
@@ -180,6 +210,24 @@ Intelligence cards interact with the hidden nuclear breakdown:
 
 Being able to see an opponent's breakdown matters because it supports bluffing: a high posture number may hide empty silos.
 
+### 6.1 Submarines and patrols
+
+Submarines are the hardest nuclear asset to find, which is why they count as much as a silo. Their counter is a **patrol group**, a generic naval unit that stands for the whole anti-submarine effort: ships, trawlers, helicopters and spy satellites.
+
+**Submarines:**
+- Live in sea zones (§12). Their positions are hidden from other players.
+- Move up to one sea zone per round as part of the owner's repositioning order. Movement is secret.
+- Can't be targeted while undetected.
+
+**Patrol groups:**
+- Deployed to a sea zone next to one of your coastal territories by a development order. They move one sea zone per repositioning order.
+- See their own sea zone and every adjacent sea zone. Any submarine inside that range is revealed to the patrol's owner, and to defensive-agreement partners.
+- Can attack a revealed submarine with a **sub hunt** operation, which follows the normal rules for conventional operations (including declaring war if needed). In combat, the patrol engages the submarine like any other target. A destroyed submarine loses any missiles it had not launched.
+- Have no nuclear posture and cause no tension spike to build.
+- Are vulnerable to aircraft and missile raids. Losing patrols opens gaps for submarines to slip through.
+
+The base game includes patrols in this simple form, once sea zones are added to the map. Richer anti-submarine warfare (sonar types, decoys, separate satellite coverage) belongs in a later module.
+
 ## 7. Nuclear release
 
 ### 7.1 Crisis check
@@ -198,8 +246,8 @@ Release is opened **for the coming combat window only** and is checked again eve
 
 - **Eligible voters:** every player with a viable country.
 - **Voting:** simultaneous and secret, then all votes are revealed together. Each Authorize vote adds +1 blame.
-- **Threshold:** strictly more than half of eligible voters. **Ties fail.**
-- **Two-player games:** at 80–99, both players must authorize. This is intentional: either player alone can hold release until tension reaches 100.
+- **Threshold:** strictly more than half of eligible voters. With 3 or 4 players, **ties fail**.
+- **Two-player games:** if both authorize, release opens. If both hold, it stays locked. If they split, **a coin flip decides**, using the match's seeded random number generator so it shows up in replays. The flip is shown on screen and logged. The player who voted Authorize still takes the +1 blame either way.
 - **Disconnected or timed-out players vote Hold.** A disconnect never creates authorization.
 - **AI** players vote according to their personality weights and current threats.
 
@@ -236,7 +284,8 @@ After every change, T is set to max(T, F) and then capped at 100.
 - The tension track shows **T, F, the band thresholds and a change log for this round**: "+8 Aster built a silo · +12 Cinder declared war on Brine · −4 cooling."
 - Before any action, the preview shows its **tension change, blame change, and whether it would cross a band threshold**. Example: "This will raise tension to 83. A crisis vote will be held this round."
 - The relationship panel shows each pair's state, active treaties, and hostility in both directions.
-- The posture panel shows each player's public PP and whatever breakdown you have verified.
+- The posture panel shows each player's posture band (exact PP on hover) and whatever breakdown you have verified.
+- Each player's blame, infamy and pariah status are shown next to their country. The score preview includes the infamy penalty and Peace Broker tokens.
 
 ## 11. Example round
 
@@ -246,25 +295,37 @@ At the crisis check, tension is 86, so a vote is held. Aster and Cinder authoriz
 
 ## 12. Dependencies on the main design
 
-- **Submarines need sea zones.** The current map is territories only. Proposal: add sea zones next to coastal territories, with submarine positions hidden by default.
+- **Submarines and patrols need sea zones.** The current map is territories only. Proposal: add sea zones next to coastal territories, with submarine positions hidden by default.
+- **Scoring changes:** the score formula in main design §1 now includes Peace Broker tokens and the infamy penalty.
 - **Viability** must be precisely defined (main design §1) because it sets who can vote.
 - Milestone 4 should include this spec: the tension track, floor, crisis vote, treaties that affect launches, and the aftermath state.
 
 ## 13. Acceptance tests (for Milestone 4)
 
 - Building and dismantling update both the spike and the floor, and T never falls below F.
-- Floor alone never exceeds 75, so it can never trigger a crisis vote by itself.
+- The floor never exceeds the scenario cap (default 90). It can reach the crisis vote band by itself but never 100.
 - A canceled aggressive card still applies its printed tension.
-- Ties and disconnected players never authorize release; in 2-player games at 80–99, one Hold blocks release.
+- Disconnected players never authorize release. In games of 3 or 4, ties fail. In 2-player games, a split vote is decided by a seeded coin flip that is reproduced exactly in replays.
+- Infamy never decreases except through mediation, and the infamy penalty appears in the score preview.
+- Undetected submarines can't be targeted. A submarine inside a patrol's range is revealed only to that patrol's owner and their defensive partners.
 - Release reverts to locked when T drops below 80 and no launch has occurred.
 - After the first launch, release stays available and ceasefires still block launches between signatories.
 - Every tension change appears in the log with a source and an amount.
 
-## 14. Open questions
+## 14. Decisions so far
 
-1. Should high blame affect score, or stay purely political? (Current answer: political only.)
-2. Is a floor cap of 75 right, or should a big enough arms race reach the crisis band by itself?
-3. Should public PP be exact, or a rounded band ("low / moderate / high")?
-4. Does mediation need a stronger reward to be worth spending a main action on?
-5. Do submarines need an anti-submarine counter in the base game, or only in a later module?
-6. What should 2-player games use instead of a majority vote? Is the "both must authorize" rule fun or just a stalemate?
+| Question | Decision |
+|---|---|
+| Should blame affect score? | Yes, through permanent infamy (§4.1). Current blame also drives pariah status and AI targeting (§4.2). |
+| Floor cap | Raised to 90 and made a scenario setting. An arms race can reach the crisis band by itself. |
+| Public posture | Shown as a band; exact PP on hover. |
+| Mediation reward | Peace Broker token (+3 score), 2 cards, and −3 blame and infamy. |
+| Anti-submarine counter | A generic patrol group with a vision range, in simple form in the base game (§6.1). |
+| 2-player crisis vote | A split vote is settled by a seeded coin flip. |
+
+## 15. Open questions
+
+1. Is −1 score per 3 infamy the right size of penalty? It needs testing against the value of a last-round launch.
+2. Should a pariah's own defensive agreements automatically lapse, or should partners have to choose?
+3. Should patrol vision also reveal surface units and bombers in transit over the sea, or only submarines?
+4. Does a 2-player coin flip feel fair, or should the player with less infamy win split votes instead?

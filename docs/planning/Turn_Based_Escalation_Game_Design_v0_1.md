@@ -29,7 +29,9 @@ The standard match ends after round 12, an agreed early settlement, or when only
 
 Prototype scoring:
 
-**Score = 3 × supported surviving population tokens + functioning civilian installations + 2 × controlled non-starting territories.**
+**Score = 3 × supported surviving population tokens + functioning civilian installations + 2 × controlled non-starting territories + 3 × Peace Broker tokens − 1 per 3 infamy.**
+
+Peace Broker tokens and infamy are defined in `Tension_and_Diplomacy_Spec_v0_1.md`.
 
 A population token is supported when its connected supply network has enough current output and reserves to cover its food and water needs over the next two upkeeps. The score preview shows this calculation throughout the game. Population is abstract, not a claim about particular real-world casualty figures.
 
