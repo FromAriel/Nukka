@@ -5,10 +5,12 @@
  */
 import { checkSeq, type CommandEnvelope } from '../commands.js';
 import type { MatchContext } from './context.js';
+import { crisisCheck, resolveCrisisVote } from './crisis.js';
 import type { EventSink, GameEvent } from './events.js';
 import { resolvePlanning, validatePlanning } from './planning.js';
 import { scoreFor } from './score.js';
 import {
+  type CrisisVote,
   PASS_ORDERS,
   type GameState,
   type PendingDecision,
@@ -17,7 +19,8 @@ import {
 } from './state.js';
 import { runUpkeep } from './upkeep.js';
 
-export type Command = { type: 'SubmitPlanning'; orders: PlanningOrders };
+export type Command =
+  { type: 'SubmitPlanning'; orders: PlanningOrders } | { type: 'CastCrisisVote'; vote: CrisisVote };
 
 export type SubmitResult =
   | { ok: true; state: GameState; events: GameEvent[] }
@@ -32,6 +35,8 @@ export function defaultCommand(decision: PendingDecision): Command {
   switch (decision.kind) {
     case 'planning':
       return { type: 'SubmitPlanning', orders: PASS_ORDERS };
+    case 'crisis-vote':
+      return { type: 'CastCrisisVote', vote: 'hold' };
   }
 }
 
@@ -90,6 +95,11 @@ function validate(
     case 'SubmitPlanning':
       if (decision.kind !== 'planning') return [`expected a ${decision.kind} decision`];
       return validatePlanning(ctx, state, player, cmd.orders);
+    case 'CastCrisisVote':
+      if (decision.kind !== 'crisis-vote') return [`expected a ${decision.kind} decision`];
+      return cmd.vote === 'authorize' || cmd.vote === 'hold'
+        ? []
+        : ['vote must be authorize or hold'];
   }
 }
 
@@ -97,6 +107,9 @@ function apply(state: GameState, player: PlayerId, cmd: Command): void {
   switch (cmd.type) {
     case 'SubmitPlanning':
       state.planningOrders[player] = structuredClone(cmd.orders);
+      return;
+    case 'CastCrisisVote':
+      state.crisisVotes[player] = cmd.vote;
       return;
   }
 }
@@ -119,8 +132,7 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
         state.phase = 'crisis';
         break;
       case 'crisis':
-        // Crisis check, vote and final commitments (slice 4c).
-        state.phase = 'combat';
+        if (runCrisis(ctx, state, events)) state.phase = 'combat';
         break;
       case 'combat':
         // The shared combat window (step 6).
@@ -136,6 +148,31 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
         break;
     }
   }
+}
+
+/** Returns true when the crisis step is finished; false while waiting for votes. */
+function runCrisis(ctx: MatchContext, state: GameState, events: EventSink): boolean {
+  const check = crisisCheck(ctx, state);
+  if (check === 'vote') {
+    const voted = state.playerIds
+      .filter((id) => state.players[id]?.viable)
+      .every((id) => state.crisisVotes[id] !== undefined);
+    if (!voted) {
+      openDecisions(state, 'crisis-vote');
+      events.push({ type: 'CrisisVoteCalled', visibility: 'public', tension: state.tension.value });
+      return false;
+    }
+    resolveCrisisVote(ctx, state, events);
+  } else if (check !== 'aftermath') {
+    state.tension.release = check === 'open' ? 'open' : 'locked';
+    events.push({
+      type: 'ReleaseDecided',
+      visibility: 'public',
+      release: state.tension.release,
+      authorizers: [],
+    });
+  }
+  return true;
 }
 
 function runAftermath(ctx: MatchContext, state: GameState, events: EventSink): void {

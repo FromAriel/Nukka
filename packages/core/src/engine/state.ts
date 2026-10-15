@@ -139,12 +139,15 @@ export interface GameState {
   decisions: PendingDecision[];
   /** Planning orders submitted this round, revealed together when all are in. */
   planningOrders: Record<PlayerId, PlanningOrders>;
+  /** Crisis votes cast this round, secret until all are in. */
+  crisisVotes: Record<PlayerId, CrisisVote>;
   /** Last accepted command sequence number per player. */
   lastSeq: Record<PlayerId, number>;
   result: MatchResult | null;
 }
 
-export type DecisionKind = 'planning';
+export type DecisionKind = 'planning' | 'crisis-vote';
+export type CrisisVote = 'authorize' | 'hold';
 
 export interface PendingDecision {
   player: PlayerId;
