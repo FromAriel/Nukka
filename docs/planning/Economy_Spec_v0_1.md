@@ -244,10 +244,7 @@ For scoring, **civilian installations** are industry, farms, waterworks, power s
 | Supply mode efficiency | Supply mode produces 4 (+1 on ore) against 3 for construction. |
 | Starting supply drain | −2 per round as a starting value. |
 | Split countries | Allowed. Production stays national, with −1 P per upkeep for each extra network. |
+| Exclave cost scaling | Flat −1 P per extra network, whatever its size or distance. A country may have several exclaves; the cost stays light so splitting isn't a heavy burden. |
 | Production cap | 15 for now. It may be too low; watch it in playtests and try 20 if players hit it often. |
 
 Every number here is a starting value to tune once the game can be played.
-
-## 14. Open questions
-
-1. Should the exclave cost grow with distance or the number of territories, or stay a flat −1 per network?
