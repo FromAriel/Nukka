@@ -161,6 +161,8 @@ Global tension determines nuclear permissions. Bilateral hostility, treaties, an
 
 Conventional war is legal before nuclear release. Nuclear weapons remain locked even when tanks and aircraft are already fighting.
 
+The detailed rules for tension sources, the nuclear posture floor, crisis votes, blame, and treaties are in `Tension_and_Diplomacy_Spec_v0_1.md`.
+
 | Global tension | Proposed behavior |
 |---|---|
 | 0–39 | Routine competition; restrained political costs |
