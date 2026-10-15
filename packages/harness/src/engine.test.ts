@@ -243,3 +243,17 @@ describe('planning orders', () => {
     expect(next.players['B']!.reserves.intelligence).toBe(2 + 3);
   });
 });
+
+describe('build sites', () => {
+  it('builds on the chosen site and rejects a taken one', () => {
+    const { ctx, state } = setup();
+    const taken = tryOrders(ctx, state, 'A', {
+      development: [{ type: 'build', kind: 'shelter', territory: 'A-port', site: 0 }],
+    });
+    expect(taken.ok === false && taken.problems.join()).toMatch(/site 0 in A-port is taken/);
+    const next = playRound(ctx, state, {
+      A: { development: [{ type: 'build', kind: 'shelter', territory: 'A-port', site: 3 }] },
+    });
+    expect(instOf(next, 'A-port', 'shelter')!.site).toBe(3);
+  });
+});

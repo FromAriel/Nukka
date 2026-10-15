@@ -1,4 +1,12 @@
 /**
- * Combat simulation (Weapons and Combat spec). Built in Milestone 0 step 6.
+ * Combat simulation (Weapons and Combat spec; Technical Architecture §12).
  */
-export const COMBAT_TICKS_PER_SECOND = 20;
+import type { CombatResolver } from '@nukka/core';
+import { createCombat } from './sim.js';
+
+export { CombatSim, createCombat } from './sim.js';
+export * from './geometry.js';
+
+/** Resolves a combat window entirely on autopilot (used by the harness and for unattended players). */
+export const autopilotResolver: CombatResolver = (ctx, state, input) =>
+  createCombat(ctx, state, input).run();

@@ -319,6 +319,12 @@ export const combatSchema = z.strictObject({
       tradePermille: permille(),
     }),
   ),
+  /** Spacing between aircraft formations flying the same raid. */
+  formationSpacing: nonNeg(),
+  /** Radius around a territory's garrison point that counts as holding it. */
+  garrisonRadius: pos(),
+  /** Without radar or patrol coverage, autopilot must track a threat this long in range before firing, and can't lead it. */
+  autopilotAcquisitionMs: ms(),
   interdictionDisruptRounds: pos(),
   emergencyRelayRangePermille: permille(),
 });

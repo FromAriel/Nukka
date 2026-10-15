@@ -167,6 +167,26 @@ export function validatePlanning(
           SITES_PER_TERRITORY - installationsInTerritory(state, order.territory).length - taken;
         if (free <= 0) problems.push(`${at}: no free site in ${order.territory}`);
         pendingSites.set(order.territory, taken + 1);
+        if (order.site !== undefined) {
+          const used = installationsInTerritory(state, order.territory).some(
+            (i) => i.site === order.site,
+          );
+          const twice = orders.development.some(
+            (o, j) =>
+              j < index &&
+              o.type === 'build' &&
+              o.territory === order.territory &&
+              o.site === order.site,
+          );
+          if (
+            !Number.isSafeInteger(order.site) ||
+            order.site < 0 ||
+            order.site >= SITES_PER_TERRITORY
+          ) {
+            problems.push(`${at}: site must be 0–${SITES_PER_TERRITORY - 1}`);
+          } else if (used || twice)
+            problems.push(`${at}: site ${order.site} in ${order.territory} is taken`);
+        }
         const max = rules.economy?.maxPerCountry;
         if (max !== undefined) {
           const have = sortedEntries(state.installations).filter(
@@ -471,7 +491,12 @@ function applyDevelopment(
   const p = state.players[player]!;
   switch (order.type) {
     case 'build': {
-      const site = freeSite(state, order.territory);
+      const chosen = order.site;
+      const site =
+        chosen !== undefined &&
+        !installationsInTerritory(state, order.territory).some((i) => i.site === chosen)
+          ? chosen
+          : freeSite(state, order.territory);
       if (site === null) return;
       const inst = addInstallation(ctx, state, {
         kind: order.kind,

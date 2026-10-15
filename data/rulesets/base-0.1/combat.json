@@ -76,5 +76,8 @@
     }
   ],
   "interdictionDisruptRounds": 2,
-  "emergencyRelayRangePermille": 500
+  "emergencyRelayRangePermille": 500,
+  "garrisonRadius": 40,
+  "autopilotAcquisitionMs": 1000,
+  "formationSpacing": 30
 }

@@ -271,7 +271,15 @@ export interface QueuedAction {
 // ------------------------------------------------------------ planning orders
 
 export type DevelopmentOrder =
-  | { type: 'build'; kind: string; territory: string; mode?: string; covert?: boolean }
+  | {
+      type: 'build';
+      kind: string;
+      territory: string;
+      /** Site 0–3; the first free site if omitted. Placement matters in combat. */
+      site?: number;
+      mode?: string;
+      covert?: boolean;
+    }
   | { type: 'upgrade'; installation: string }
   | { type: 'repair'; installation: string }
   | { type: 'recruit'; unit: string; location: string; covert?: boolean }
