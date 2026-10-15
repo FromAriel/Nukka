@@ -10,7 +10,8 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
+    "@nukka/combat": "workspace:*",
     "@nukka/core": "workspace:*",
-    "@nukka/combat": "workspace:*"
+    "zod": "^4.6.7"
   }
 }

@@ -1,3 +1,4 @@
+import { parsePersonality, type Personality } from '@nukka/ai';
 import { readFileSync, readdirSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -80,4 +81,8 @@ export function loadScenario(id: string, ruleset: Ruleset, map: MapDef): Scenari
     map,
     `scenario ${id}`,
   );
+}
+
+export function loadPersonality(id: string): Personality {
+  return parsePersonality(readJson(join(DATA_DIR, 'bots', `${id}.json`)), `bot ${id}`);
 }

@@ -21,3 +21,4 @@ export * from './tension.js';
 export * from './upkeep.js';
 export * from './viability.js';
 export * from './views.js';
+export * from './replay.js';

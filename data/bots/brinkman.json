@@ -1,0 +1,18 @@
+{
+  "id": "brinkman",
+  "description": "Aggressive brinkmanship: builds an arsenal, plays escalation cards, authorizes release.",
+  "weights": {
+    "economy": 5,
+    "defense": 3,
+    "military": 5,
+    "expansion": 4,
+    "nuclear": 10,
+    "covert": 2,
+    "diplomacy": 0,
+    "aggression": 10
+  },
+  "counterIntelShare": 100,
+  "authorizeRelease": true,
+  "honorAllies": false,
+  "bureauMode": "foreign"
+}

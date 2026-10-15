@@ -1,0 +1,18 @@
+{
+  "id": "builder",
+  "description": "Industrial builder: grows the economy, keeps the peace, modest defense.",
+  "weights": {
+    "economy": 10,
+    "defense": 4,
+    "military": 2,
+    "expansion": 3,
+    "nuclear": 0,
+    "covert": 1,
+    "diplomacy": 5,
+    "aggression": 1
+  },
+  "counterIntelShare": 200,
+  "authorizeRelease": false,
+  "honorAllies": true,
+  "bureauMode": "foreign"
+}
