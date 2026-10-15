@@ -362,8 +362,11 @@ The build order that follows from this spec:
 
 **Done when:** 4 bots play 500 complete matches on the test map without errors or stuck decisions, replays reproduce exactly, and the metrics report gives readable numbers for every §16 risk.
 
-## 18. Open questions
+## 18. Decisions
 
-1. Is PixiJS the right provisional renderer, or should Milestone 1 compare it with a 2D option such as Phaser?
-2. Should the dev tuning panel be built into the client from the start, or start as a harness-only feature?
-3. Is the fully autopilot combat simulation fast enough for large harness runs, or do we need the approximate resolver from day one?
+| Question | Decision |
+|---|---|
+| Renderer | PixiJS |
+| Dev tuning panel | Wanted in the client from the start of client work, not only in the harness |
+| Combat speed in the harness | Unknown until measured. Start with the real autopilot simulation, and add the approximate resolver only if the harness is too slow. |
+| Automation | Every check (lint, typecheck, tests, harness smoke run) runs from one command locally, in cloud sessions and in CI |

@@ -1,0 +1,22 @@
+{
+  "name": "@nukka/harness",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "nukka-sim": "./src/cli.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json",
+    "sim": "tsx src/cli.ts",
+    "smoke": "tsx src/cli.ts --smoke"
+  },
+  "dependencies": {
+    "@nukka/core": "workspace:*",
+    "@nukka/combat": "workspace:*",
+    "@nukka/ai": "workspace:*"
+  }
+}
