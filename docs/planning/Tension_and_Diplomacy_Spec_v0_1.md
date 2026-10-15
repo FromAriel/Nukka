@@ -149,7 +149,7 @@ A player with current blame of **10 or more** is a **pariah** until their blame 
 - AI players strongly prioritize a pariah as a target and readily join coalitions against them.
 - Any player may declare war on a pariah at **+4 tension and no blame**, the same rate as an honor call (§5.4).
 - Cards may require a pariah target (for example, *Global Embargo*).
-- Treaties with a pariah do **not** end automatically. But any partner may leave a treaty with a pariah at any time with **no breach penalty, and loses 1 blame** for doing so. Leaving takes no action and can happen at any decision point outside combat.
+- Treaties with a pariah do **not** end automatically. But any partner may leave a treaty with a pariah at any time with **no breach penalty, and loses 1 blame** for doing so. Leaving takes no action and can happen at any decision point outside combat. The re-signing cooldown (§5.3) still applies.
 
 A first nuclear launch (+8 blame) plus almost any other aggression makes the launcher a pariah.
 
@@ -163,7 +163,7 @@ A proposal is a **main action** aimed at one player, or two for mediation. It us
 
 - **Root:** the proposal.
 - **Response:** the target must Accept or Decline, which costs no card or reaction point (the non-card answer rule), or may play a legal response card instead.
-- **Counter and stabilization:** these work as normal; for example, a third party may play *Spoiler* to sabotage a treaty.
+- **Counter and stabilization:** these work as normal. Third parties can't join a proposal's chain; to wreck an existing treaty they use the *Spoiler* card as their own main action.
 
 A declined proposal has no cost beyond the main action spent.
 
@@ -180,6 +180,8 @@ The mediator keeps the Peace Broker token even if the ceasefire is later broken.
 ### 5.3 Treaties
 
 Treaties last until broken or until their stated duration ends. Breaking any treaty applies **+10 tension and +3 blame**, plus **+3 hostility** from every other signatory.
+
+**Re-signing cooldown:** whenever a treaty ends early for any reason (broken, left without penalty because the partner is a pariah, or ended by a card such as *Spoiler* or *Trade Embargo*), those players can't sign any new treaty with each other for **3 rounds**. This applies even when no penalty was taken. Treaties that simply reach the end of their duration have no cooldown.
 
 | Treaty | Signed by | Effect | Tension on signing |
 |---|---|---|---|
@@ -228,7 +230,7 @@ Submarines are the hardest nuclear asset to find, which is why they count as muc
 - Have no nuclear posture and cause no tension spike to build.
 - Are vulnerable to aircraft and missile raids. Losing patrols opens gaps for submarines and incoming bombers to slip through.
 
-The base game includes patrols in this simple form, once sea zones are added to the map. Detection uses one general rule throughout: a unit or installation with a vision range reveals hidden units inside it. Land radar and patrols are two sources under the same rule. Richer anti-submarine warfare (sonar types, decoys, separate satellite coverage) belongs in a later module.
+The base game includes patrols in this simple form, once sea zones are added to the map. Detection uses one general rule throughout: a unit or installation with a vision range reveals hidden units inside it. Land radar installations and patrols are two sources under the same rule, and **both show their vision range on the map** as a coverage overlay. Richer anti-submarine warfare (sonar types, decoys, separate satellite coverage) belongs in a later module.
 
 ## 7. Nuclear release
 
@@ -327,9 +329,9 @@ At the crisis check, tension is 86, so a vote is held. Aster and Cinder authoriz
 | Pariah alliances | Don't end automatically. Partners may leave without penalty and lose 1 blame (§4.2). |
 | Anti-submarine counter | A patrol group in simple form in the base game. It is a general detector: it sees submarines, ships and aircraft in range and acts as forward radar (§6.1). |
 | 2-player crisis vote | A split vote goes to a d6 roll-off; the higher-infamy player rolls twice and keeps the lower (§7.2). |
+| Re-signing after a treaty ends early | 3-round cooldown before the same players can sign any treaty again, even after a penalty-free exit (§5.3). |
+| Land radar vision | Shown on the map, using the same detection rule as patrols (§6.1). |
 
 ## 15. Open questions
 
-1. What rate of infamy penalty feels right? Measure it against the value of a last-round launch.
-2. Can players leave a pariah treaty, let the pariah status lapse, and then sign again for an extra benefit? If testing shows abuse, add a cooldown before re-signing.
-3. Should land radar installations also use vision ranges on the map, so the same detection rule covers both land and sea?
+1. What rate of infamy penalty feels right? Start with −1 per 3 and adjust from playtest numbers.
