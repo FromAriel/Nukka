@@ -121,7 +121,11 @@
         "durationRounds": null
       }
     },
-    "mediatedBreachExtraBlame": 2
+    "mediatedBreachExtraBlame": 2,
+    "armsControl": {
+      "postureReduction": 6,
+      "deadlineRounds": 2
+    }
   },
   "missions": {
     "peaceEnvoy": {
@@ -147,5 +151,8 @@
   },
   "aftermath": {
     "moratoriumBreachBlame": 10
+  },
+  "trade": {
+    "maxPerPartner": 2
   }
 }

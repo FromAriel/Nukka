@@ -139,6 +139,17 @@ export interface GameState {
   decisions: PendingDecision[];
   /** Planning orders submitted this round, revealed together when all are in. */
   planningOrders: Record<PlayerId, PlanningOrders>;
+  /** Timed effects from cards and rules (Technical Architecture spec §11). */
+  modifiers: Modifier[];
+  treaties: Treaty[];
+  /** Pairs who can't sign a new treaty until the given round (Tension spec §5.3). */
+  cooldowns: { a: PlayerId; b: PlayerId; untilRound: number }[];
+  /** Hidden information revealed to a player until a round ends. */
+  reveals: { subject: string; of: PlayerId; to: PlayerId; untilRound: number }[];
+  /** Main actions waiting to resolve this round, in initiative order. */
+  actionQueue: QueuedAction[];
+  /** The event chain or proposal being resolved, if any. */
+  chain: Chain | null;
   /** Crisis votes cast this round, secret until all are in. */
   crisisVotes: Record<PlayerId, CrisisVote>;
   /** Last accepted command sequence number per player. */
@@ -146,12 +157,93 @@ export interface GameState {
   result: MatchResult | null;
 }
 
-export type DecisionKind = 'planning' | 'crisis-vote';
+export type DecisionKind = 'planning' | 'crisis-vote' | 'reaction' | 'choice' | 'proposal';
 export type CrisisVote = 'authorize' | 'hold';
 
 export interface PendingDecision {
   player: PlayerId;
   kind: DecisionKind;
+  /** For reactions: the slot being offered. */
+  slot?: ChainSlot;
+  /** For choices: the legal option ids. */
+  options?: string[];
+}
+
+export type ChainSlot = 'response' | 'counter' | 'stabilization';
+
+export interface Modifier {
+  id: string;
+  player: PlayerId;
+  stat: string;
+  amount: number;
+  data: Record<string, string | number | boolean>;
+  /** Active from the start of fromRound through the end of untilRound. */
+  fromRound: number;
+  untilRound: number;
+}
+
+export interface Treaty {
+  id: string;
+  kind: string;
+  parties: PlayerId[];
+  signedRound: number;
+  /** Last round the treaty is in force, or null if open-ended. */
+  untilRound: number | null;
+  mediatedBy: PlayerId | null;
+  /** Arms control: posture at signing and the round by which it must have fallen. */
+  baselinePosture: Record<PlayerId, number>;
+  deadlineRound: number | null;
+}
+
+export interface ChainLink {
+  slot: 'root' | ChainSlot;
+  player: PlayerId;
+  card: string;
+  target: string | null;
+  canceled: boolean;
+}
+
+export interface Chain {
+  id: string;
+  kind: 'card' | 'global' | 'proposal';
+  initiator: PlayerId;
+  /** The affected player, who answers in the response and stabilization slots. */
+  defender: PlayerId | null;
+  links: ChainLink[];
+  /** Slots still to offer, in order. */
+  remaining: ChainSlot[];
+  params: CardParams;
+  proposal: Proposal | null;
+  /** Answers to choices and proposals, by player. */
+  answers: Record<PlayerId, string>;
+}
+
+export interface CardParams {
+  /** Border Exercise: which stacks move where. */
+  moves?: Reposition[];
+}
+
+export type ProposalKind =
+  | 'nonAggression'
+  | 'defensive'
+  | 'trade'
+  | 'ceasefire'
+  | 'armsControl'
+  | 'settlement'
+  | 'moratorium'
+  | 'peaceEnvoy'
+  | 'mediation'
+  | 'openVerification';
+
+export interface Proposal {
+  kind: ProposalKind;
+  /** Players who must accept: the target, or both sides for mediation; everyone for settlement. */
+  parties: PlayerId[];
+}
+
+export interface QueuedAction {
+  player: PlayerId;
+  action: MainAction;
 }
 
 // ------------------------------------------------------------ planning orders
@@ -178,26 +270,41 @@ export interface LoadOrder {
   count: number;
 }
 
-export type MainAction = { type: 'pass' };
+export type MainAction =
+  | { type: 'pass' }
+  | { type: 'card'; card: string; target?: string; params?: CardParams }
+  | { type: 'proposal'; proposal: ProposalKind; target?: PlayerId; second?: PlayerId };
+
+export interface TradeTransfer {
+  to: PlayerId;
+  resource: 'food' | 'water' | 'supplies';
+  amount: number;
+}
 
 export interface PlanningOrders {
   development: DevelopmentOrder[];
-  repositioning: Reposition | null;
+  repositioning: Reposition[];
   /** Free: move stockpiled weapons into silos and launchers. */
   loads: LoadOrder[];
   /** Installation id → requested mode (takes effect next upkeep). */
   modes: Record<string, string>;
   /** IP set aside as counter-intelligence this round. */
   counterIntel: number;
+  /** Transfers to trade-agreement partners. */
+  trades: TradeTransfer[];
+  /** Treaties to leave without penalty because the other party is a pariah. */
+  leaveTreaties: string[];
   main: MainAction;
 }
 
 export const PASS_ORDERS: PlanningOrders = {
   development: [],
-  repositioning: null,
+  repositioning: [],
   loads: [],
   modes: {},
   counterIntel: 0,
+  trades: [],
+  leaveTreaties: [],
   main: { type: 'pass' },
 };
 

@@ -18,9 +18,13 @@ import { drawCards } from './setup.js';
 import { changeTension, settleTension } from './tension.js';
 import type { GameState, PlayerId, Reserves } from './state.js';
 import { eliminatePlayer } from './viability.js';
+import { upkeepDiplomacy } from './diplomacy.js';
+import { activeModifiers, expireModifiers, modifierTotal } from './modifiers.js';
 
 export function runUpkeep(ctx: MatchContext, state: GameState, events: EventSink): void {
   const { economy } = ctx.ruleset;
+  expireModifiers(state);
+  upkeepDiplomacy(ctx, state, events);
   const powered = poweredInstallations(ctx, state);
 
   for (const player of state.playerIds) {
@@ -57,7 +61,15 @@ export function runUpkeep(ctx: MatchContext, state: GameState, events: EventSink
       exclaveCost,
     });
 
-    payMilitary(ctx, state, events, player, powered, nets[0]);
+    // Resource drains from cards such as Sanctions and Trade Embargo.
+    for (const drain of activeModifiers(state, player, 'drain')) {
+      const resource = drain.data['resource'] as keyof Reserves;
+      if (resource in p.reserves)
+        p.reserves[resource] = Math.max(0, p.reserves[resource] - drain.amount);
+    }
+
+    if (modifierTotal(state, player, 'supplyUpkeepWaived') === 0)
+      payMilitary(ctx, state, events, player, powered, nets[0]);
   }
 
   // Repairs and rebuilds that finish this round.

@@ -65,6 +65,12 @@ export function createMatch(config: MatchConfig): { ctx: MatchContext; state: Ga
     decisions: [],
     planningOrders: {},
     crisisVotes: {},
+    modifiers: [],
+    treaties: [],
+    cooldowns: [],
+    reveals: [],
+    actionQueue: [],
+    chain: null,
     lastSeq: {},
     result: null,
   };

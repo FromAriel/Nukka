@@ -4,9 +4,12 @@
  * until the next decision is needed.
  */
 import { checkSeq, type CommandEnvelope } from '../commands.js';
+import { cardDef, reactionLegal } from './cards.js';
 import type { MatchContext } from './context.js';
 import { crisisCheck, resolveCrisisVote } from './crisis.js';
+import { safeOption } from './effects.js';
 import type { EventSink, GameEvent } from './events.js';
+import { applyReaction, legalReactions, runEvents } from './events-phase.js';
 import { resolvePlanning, validatePlanning } from './planning.js';
 import { scoreFor } from './score.js';
 import {
@@ -20,7 +23,11 @@ import {
 import { runUpkeep } from './upkeep.js';
 
 export type Command =
-  { type: 'SubmitPlanning'; orders: PlanningOrders } | { type: 'CastCrisisVote'; vote: CrisisVote };
+  | { type: 'SubmitPlanning'; orders: PlanningOrders }
+  | { type: 'CastCrisisVote'; vote: CrisisVote }
+  | { type: 'React'; card: string | null }
+  | { type: 'Choose'; option: string }
+  | { type: 'AnswerProposal'; accept: boolean };
 
 export type SubmitResult =
   | { ok: true; state: GameState; events: GameEvent[] }
@@ -37,6 +44,12 @@ export function defaultCommand(decision: PendingDecision): Command {
       return { type: 'SubmitPlanning', orders: PASS_ORDERS };
     case 'crisis-vote':
       return { type: 'CastCrisisVote', vote: 'hold' };
+    case 'reaction':
+      return { type: 'React', card: null };
+    case 'choice':
+      return { type: 'Choose', option: safeOption((decision.options ?? []).map((id) => ({ id }))) };
+    case 'proposal':
+      return { type: 'AnswerProposal', accept: false };
   }
 }
 
@@ -58,18 +71,21 @@ export function submit(
   state: GameState,
   envelope: CommandEnvelope<Command>,
 ): SubmitResult {
-  if (envelope.matchId !== state.meta.matchId)
+  if (envelope.matchId !== state.meta.matchId) {
     return { ok: false, code: 'wrong-match', problems: ['wrong match'] };
+  }
   const seq = checkSeq(state.lastSeq[envelope.playerId], envelope.seq);
-  if (!seq.ok)
+  if (!seq.ok) {
     return {
       ok: false,
       code: seq.code,
       problems: [`sequence ${envelope.seq} rejected (${seq.code})`],
     };
+  }
   const decision = state.decisions.find((d) => d.player === envelope.playerId);
-  if (!decision)
+  if (!decision) {
     return { ok: false, code: 'not-waiting', problems: ['no decision is pending for you'] };
+  }
 
   const { cmd } = envelope;
   const problems = validate(ctx, state, envelope.playerId, decision, cmd);
@@ -78,10 +94,14 @@ export function submit(
   const next = structuredClone(state);
   const events: GameEvent[] = [];
   next.lastSeq[envelope.playerId] = envelope.seq;
-  next.decisions = next.decisions.filter((d) => d !== decision && d.player !== envelope.playerId);
-  apply(next, envelope.playerId, cmd);
+  next.decisions = next.decisions.filter((d) => d.player !== envelope.playerId);
+  apply(next, events, envelope.playerId, cmd);
   if (next.decisions.length === 0) runUntilDecision(ctx, next, events);
   return { ok: true, state: next, events };
+}
+
+function expected(decision: PendingDecision): string[] {
+  return [`expected a ${decision.kind} decision`];
 }
 
 function validate(
@@ -93,23 +113,63 @@ function validate(
 ): string[] {
   switch (cmd.type) {
     case 'SubmitPlanning':
-      if (decision.kind !== 'planning') return [`expected a ${decision.kind} decision`];
+      if (decision.kind !== 'planning') return expected(decision);
       return validatePlanning(ctx, state, player, cmd.orders);
     case 'CastCrisisVote':
-      if (decision.kind !== 'crisis-vote') return [`expected a ${decision.kind} decision`];
+      if (decision.kind !== 'crisis-vote') return expected(decision);
       return cmd.vote === 'authorize' || cmd.vote === 'hold'
         ? []
         : ['vote must be authorize or hold'];
+    case 'React': {
+      if (decision.kind !== 'reaction' || !decision.slot || !state.chain) return expected(decision);
+      if (cmd.card === null) return [];
+      if (legalReactions(ctx, state, state.chain, player, decision.slot).includes(cmd.card))
+        return [];
+      const root = state.chain.links[0];
+      const known = ctx.deck.cards.some((c) => c.id === cmd.card);
+      const legalIfAffordable =
+        known && root && state.players[player]?.hand.includes(cmd.card)
+          ? reactionLegal(ctx, state, player, cardDef(ctx, cmd.card), decision.slot, root, 1)
+          : false;
+      return [
+        `${cmd.card}: ${legalIfAffordable ? 'no reaction points left' : 'not a legal reaction here'}`,
+      ];
+    }
+    case 'Choose':
+      if (decision.kind !== 'choice') return expected(decision);
+      return decision.options?.includes(cmd.option)
+        ? []
+        : [`option must be one of ${(decision.options ?? []).join(', ')}`];
+    case 'AnswerProposal':
+      return decision.kind === 'proposal' ? [] : expected(decision);
   }
 }
 
-function apply(state: GameState, player: PlayerId, cmd: Command): void {
+function apply(state: GameState, events: EventSink, player: PlayerId, cmd: Command): void {
   switch (cmd.type) {
     case 'SubmitPlanning':
       state.planningOrders[player] = structuredClone(cmd.orders);
       return;
     case 'CastCrisisVote':
       state.crisisVotes[player] = cmd.vote;
+      return;
+    case 'React':
+      if (cmd.card !== null) {
+        events.push({
+          type: 'CardPlayed',
+          visibility: 'public',
+          player,
+          card: cmd.card,
+          slot: state.chain?.remaining[0],
+        });
+      }
+      applyReaction(state, player, cmd.card);
+      return;
+    case 'Choose':
+      if (state.chain) state.chain.answers[player] = cmd.option;
+      return;
+    case 'AnswerProposal':
+      if (state.chain) state.chain.answers[player] = cmd.accept ? 'accept' : 'decline';
       return;
   }
 }
@@ -128,8 +188,7 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
         state.phase = 'events';
         break;
       case 'events':
-        // Main actions and chains resolve here (slices 4d and 4f).
-        state.phase = 'crisis';
+        if (runEvents(ctx, state, events)) state.phase = 'crisis';
         break;
       case 'crisis':
         if (runCrisis(ctx, state, events)) state.phase = 'combat';
@@ -185,13 +244,17 @@ function runAftermath(ctx: MatchContext, state: GameState, events: EventSink): v
   }
   const viable = state.playerIds.filter((id) => state.players[id]?.viable);
   const finished = state.round >= ctx.ruleset.match.rounds;
-  if (finished || viable.length <= 1) {
-    endMatch(
-      ctx,
-      state,
-      events,
-      viable.length === 0 ? 'mutual-defeat' : finished ? 'rounds' : 'last-viable',
-    );
+  const settled = state.treaties.some((t) => t.kind === 'settlement');
+  if (finished || settled || viable.length <= 1) {
+    const reason =
+      viable.length === 0
+        ? 'mutual-defeat'
+        : settled
+          ? 'settlement'
+          : finished
+            ? 'rounds'
+            : 'last-viable';
+    endMatch(ctx, state, events, reason);
     return;
   }
   state.round++;

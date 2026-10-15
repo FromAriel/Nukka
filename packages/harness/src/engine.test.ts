@@ -183,11 +183,11 @@ describe('planning orders', () => {
       ([, u]) => u.owner === 'A' && u.kind === 'groundFormation',
     )![1];
     const bad = tryOrders(ctx, state, 'A', {
-      repositioning: { stack: stack.id, count: 1, to: 'N-lakeshore' },
+      repositioning: [{ stack: stack.id, count: 1, to: 'N-lakeshore' }],
     });
     expect(bad.ok).toBe(false);
     const next = playRound(ctx, state, {
-      A: { repositioning: { stack: stack.id, count: 2, to: 'A-capital' } },
+      A: { repositioning: [{ stack: stack.id, count: 2, to: 'A-capital' }] },
     });
     const atCapital = sortedEntries(next.units).find(
       ([, u]) => u.owner === 'A' && u.location === 'A-capital',

@@ -229,6 +229,7 @@ export const tensionSchema = z.strictObject({
       z.strictObject({ signingTension: int(), durationRounds: pos().nullable() }),
     ),
     mediatedBreachExtraBlame: nonNeg(),
+    armsControl: z.strictObject({ postureReduction: nonNeg(), deadlineRounds: pos() }),
   }),
   missions: z.strictObject({
     peaceEnvoy: z.strictObject({ tension: int(), hostility: int() }),
@@ -242,6 +243,7 @@ export const tensionSchema = z.strictObject({
     }),
     openVerification: z.strictObject({ tension: int() }),
   }),
+  trade: z.strictObject({ maxPerPartner: nonNeg() }),
   disarmamentSpikePermille: permille(),
   vote: z.strictObject({ authorizeBlame: nonNeg(), rollOffDie: pos() }),
   aftermath: z.strictObject({ moratoriumBreachBlame: nonNeg() }),

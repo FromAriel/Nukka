@@ -125,7 +125,7 @@ While tension is **40 or higher** (open crisis), every positive tension value pr
 
 **14. Full Mobilization** — Root · *Military*
 - **Target:** none.
-- **Effect:** this round you get **+1 repositioning order** and **+1 development order** (military units or ammunition only), and your military units pay **no supply upkeep** at the next upkeep.
+- **Effect:** next round you get **+1 repositioning order** and **+1 development order** (military units or ammunition only), and your military units pay **no supply upkeep** at the next upkeep. (Cards resolve after planning, so planning bonuses always apply to the next round.)
 - **Tension** +18 · **Blame** +2
 - **Answered by:** none.
 - **Primitives:** modify.

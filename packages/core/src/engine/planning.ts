@@ -5,7 +5,15 @@
 import { sortedEntries } from '../collections.js';
 import { ceilDiv, mulPermille } from '../fixed.js';
 import { installationRules, territoryDef, type MatchContext } from './context.js';
-import { networks } from './derived.js';
+import { rootCardProblems } from './cards.js';
+import { networks, devastationEffects } from './derived.js';
+import {
+  leaveTreaty,
+  leaveTreatyProblems,
+  proposalProblems,
+  treatiesBetween,
+} from './diplomacy.js';
+import { modifierTotal } from './modifiers.js';
 import type { EventSink } from './events.js';
 import { addInstallation, addUnits } from './setup.js';
 import { changeTension } from './tension.js';
@@ -16,6 +24,8 @@ import type {
   PlanningOrders,
   PlayerId,
 } from './state.js';
+
+const MILITARY_ORDERS: ReadonlySet<DevelopmentOrder['type']> = new Set(['recruit', 'ammunition']);
 
 const SITES_PER_TERRITORY = 4;
 
@@ -106,8 +116,16 @@ export function validatePlanning(
   const p = state.players[player];
   if (!p) return ['unknown player'];
   const limits = ctx.ruleset.match.orders;
-  if (orders.development.length > limits.development) {
-    problems.push(`at most ${limits.development} development orders`);
+  const devLimit = Math.max(
+    0,
+    limits.development + modifierTotal(state, player, 'developmentOrders'),
+  );
+  const militaryExtra = modifierTotal(state, player, 'militaryDevelopmentOrders');
+  const general = orders.development.filter((o) => !MILITARY_ORDERS.has(o.type)).length;
+  if (orders.development.length > devLimit + militaryExtra || general > devLimit) {
+    problems.push(
+      `at most ${devLimit} development orders${militaryExtra > 0 ? ` (+${militaryExtra} military)` : ''}`,
+    );
   }
   let production = 0;
   const pendingSites = new Map<string, number>();
@@ -225,8 +243,13 @@ export function validatePlanning(
     problems.push(`orders cost ${production} production; you have ${p.reserves.production}`);
   }
 
-  if (orders.repositioning) {
-    const move = orders.repositioning;
+  const moveLimit = limits.repositioning + modifierTotal(state, player, 'repositioningOrders');
+  if (orders.repositioning.length > moveLimit)
+    problems.push(`at most ${moveLimit} repositioning orders`);
+  const movedStacks = new Set<string>();
+  for (const move of orders.repositioning) {
+    if (movedStacks.has(move.stack)) problems.push('repositioning: each stack moves once');
+    movedStacks.add(move.stack);
     const stack = state.units[move.stack];
     if (!stack || stack.owner !== player) problems.push('repositioning: not your units');
     else if (move.count < 1 || move.count > stack.count)
@@ -287,7 +310,32 @@ export function validatePlanning(
   else if (orders.counterIntel > p.reserves.intelligence)
     problems.push('counterIntel exceeds your intelligence reserve');
 
-  if (orders.main.type !== 'pass') problems.push('main: only pass is supported so far');
+  const main = orders.main;
+  if (main.type === 'card')
+    problems.push(
+      ...rootCardProblems(ctx, state, player, main.card, main.target).map((m) => `main: ${m}`),
+    );
+  else if (main.type === 'proposal')
+    problems.push(...proposalProblems(state, player, main).map((m) => `main: ${m}`));
+
+  const sent = new Map<string, number>();
+  for (const trade of orders.trades) {
+    const key = trade.to;
+    sent.set(key, (sent.get(key) ?? 0) + trade.amount);
+    if (treatiesBetween(state, player, trade.to, 'trade').length === 0)
+      problems.push(`trades: no trade agreement with ${trade.to}`);
+    else if (
+      modifierTotal(state, player, 'tradeBlocked') > 0 ||
+      modifierTotal(state, trade.to, 'tradeBlocked') > 0
+    )
+      problems.push('trades: trade is blocked');
+    if (trade.amount < 1 || (sent.get(key) ?? 0) > ctx.ruleset.tension.trade.maxPerPartner)
+      problems.push(`trades: at most ${ctx.ruleset.tension.trade.maxPerPartner} per partner`);
+    if (trade.amount > p.reserves[trade.resource])
+      problems.push(`trades: not enough ${trade.resource}`);
+  }
+  for (const id of orders.leaveTreaties)
+    problems.push(...leaveTreatyProblems(ctx, state, player, id));
   return problems;
 }
 
@@ -315,8 +363,7 @@ export function resolvePlanning(ctx: MatchContext, state: GameState, events: Eve
       p.stock[load.ammunition] = (p.stock[load.ammunition] ?? 0) - load.count;
       inst.loaded[load.ammunition] = (inst.loaded[load.ammunition] ?? 0) + load.count;
     }
-    if (orders.repositioning) {
-      const move = orders.repositioning;
+    for (const move of orders.repositioning) {
       const stack = state.units[move.stack];
       if (stack && stack.count >= move.count) {
         stack.count -= move.count;
@@ -338,6 +385,28 @@ export function resolvePlanning(ctx: MatchContext, state: GameState, events: Eve
     }
     p.reserves.intelligence -= orders.counterIntel;
     p.counterIntel += orders.counterIntel;
+    const tradePermille = devastationEffects(ctx, state.devastation).tradePermille;
+    for (const trade of orders.trades) {
+      const amount = Math.min(trade.amount, p.reserves[trade.resource]);
+      p.reserves[trade.resource] -= amount;
+      const partner = state.players[trade.to];
+      if (partner) partner.reserves[trade.resource] += mulPermille(amount, tradePermille);
+    }
+    for (const id of orders.leaveTreaties) leaveTreaty(ctx, state, events, player, id);
+  }
+  // Main actions queue in initiative order; cards leave the hand now so they can't also be used as reactions.
+  state.actionQueue = [];
+  const n = state.playerIds.length;
+  for (let k = 0; k < n; k++) {
+    const player = state.playerIds[(state.initiative + k) % n]!;
+    const orders = state.planningOrders[player];
+    if (!orders || !state.players[player]?.viable) continue;
+    if (orders.main.type === 'card') {
+      const hand = state.players[player]!.hand;
+      const index = hand.indexOf(orders.main.card);
+      if (index >= 0) hand.splice(index, 1);
+    }
+    state.actionQueue.push({ player, action: structuredClone(orders.main) });
   }
   state.planningOrders = {};
 }

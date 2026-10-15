@@ -496,7 +496,7 @@
       "copies": 1,
       "plays": ["root"],
       "tags": ["military"],
-      "text": "This round: +1 repositioning order and +1 development order (military only). Your units pay no supply upkeep at the next upkeep.",
+      "text": "Next round: +1 repositioning order and +1 development order (military only). Your units pay no supply upkeep at the next upkeep.",
       "target": {
         "type": "none"
       },
@@ -506,14 +506,16 @@
           "player": "$self",
           "stat": "repositioningOrders",
           "delta": 1,
-          "rounds": 1
+          "rounds": 1,
+          "from": "nextRound"
         },
         {
           "op": "modify",
           "player": "$self",
           "stat": "militaryDevelopmentOrders",
           "delta": 1,
-          "rounds": 1
+          "rounds": 1,
+          "from": "nextRound"
         },
         {
           "op": "modify",
