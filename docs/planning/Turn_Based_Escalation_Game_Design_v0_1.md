@@ -69,6 +69,8 @@ A country can therefore own six bombs but only enough aircraft to carry two this
 
 ### Use five economic measures
 
+(A sixth measure, Intelligence, funds covert operations; see `Covert_Operations_Spec_v0_1.md`.)
+
 Production pays for building and repair. Food and water have output, demand, and reserves. Power is operating capacity, not a stockpile. Supplies abstract fuel, maintenance, and ordinary ammunition support.
 
 Industry can be assigned to construction or supply production. Military units need supply, preventing unlimited maintenance-free accumulation. Weapon magazines refill only through an available supply connection, not whenever combat starts.

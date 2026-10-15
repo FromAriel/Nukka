@@ -20,9 +20,7 @@ Every reaction costs 1 reaction point plus the card itself (main design §4).
 
 ### Covert cards
 
-Covert cards follow the spying rules (tension spec §6):
-- If a Covert card **resolves**, it adds no tension or blame, because nobody can prove who did it. The target knows what happened, but not who did it.
-- If it is **canceled**, the player who played it is **exposed**: +4 tension, +2 blame and +2 hostility from the target. Any tension or blame printed on the card applies too.
+Covert cards are **not** played as roots or reactions. They follow `Covert_Operations_Spec_v0_1.md`: they are placed face down in shadow slots during planning, go off 1–3 rounds later at the intelligence step credited to an unknown actor, cost Intelligence (IP), and are stopped by hidden counter-intelligence and countermeasures. The full numbers for Covert cards are in that spec's §8; the entries below summarize them.
 
 ### Crisis band rule
 
@@ -82,51 +80,46 @@ While tension is **40 or higher** (open crisis), every positive tension value pr
 - **Target:** one player.
 - **Effect:** the target loses one development order next round and discards one card at random. You draw 1 card.
 - **Tension** +8 · **Blame** +2
-- **Answered by:** Security Sweep (cancels the effect; the tension and blame still apply).
+- **Answered by:** Hotline (stabilization).
 - **Primitives:** modify, damage.
-- *Not Covert:* the attempt is public, so it always costs tension and blame.
+- *Not Covert:* this is an open political act and uses the normal chain.
 
-**8. Arm the Insurgents** — Root · *Covert, Military*
+**8. Arm the Insurgents** — Operation · *Covert, Military* · 3 IP · difficulty 3
 - **Target:** one territory owned by another player.
-- **Effect:** the territory becomes **contested** for 2 rounds: it is cut out of its owner's supply network, and its garrison immediately loses 1 formation.
-- **Tension** +8 · **Blame** +2. The tension applies either way, because the unrest is visible. The blame applies only if the card is exposed.
-- **Answered by:** Security Sweep.
+- **Effect:** the territory becomes **contested** for 2 rounds: it is cut out of its owner's supply network, and its garrison loses 1 formation.
+- **Tension** +8 when it succeeds (the unrest is public; the source isn't) · **Blame** only if exposed
+- **Stopped by:** counter-intelligence, Security Sweep.
 - **Primitives:** disable, damage.
 
-**9. Sabotage Crew** — Root · *Covert*
+**9. Sabotage Crew** — Operation · *Covert* · 2 IP · difficulty 2
 - **Target:** one radar, command, power or depot installation owned by another player.
-- **Effect:** the installation is disabled until the end of this round's combat window.
-- **Tension** 0 · **Blame** 0 (exposure penalties if canceled)
-- **Answered by:** Security Sweep; Emergency Relay (stabilization) if the target was radar or command.
+- **Effect:** the installation is disabled until the end of that round's combat window.
+- **Tension** 0 · **Blame** only if exposed
+- **Stopped by:** counter-intelligence, Security Sweep. After it succeeds, the victim may still play Emergency Relay on a disabled radar or command installation.
 - **Primitives:** disable.
 
-**10. Reconnaissance** — Root · *Covert*
+**10. Reconnaissance** — Operation · *Covert* · 1 IP · difficulty 1
 - **Target:** one player.
-- **Effect:** until the next upkeep, you see the target's full nuclear breakdown and the positions of all their submarines and patrols. This also reveals any *Covert Program* assets they have, which triggers that card's reveal penalty for them.
-- **Tension** 0 · **Blame** 0 (exposure penalties if canceled)
-- **Answered by:** Security Sweep.
+- **Effect:** until the next upkeep, you privately see the target's full nuclear breakdown and the positions of all their submarines and patrols. This also reveals any *Covert Program* assets they have, which triggers that card's reveal penalty for them.
+- **Tension** 0 · **Blame** only if exposed
+- **Stopped by:** counter-intelligence, Security Sweep.
 - **Primitives:** reveal.
 
-**11. Covert Program** — Root · *Covert, Nuclear*
-- **Target:** none (it affects only you).
-- **Effect:** immediately carry out one nuclear build, paying its normal cost and using a development order. It causes **no tension spike and no change to your public posture** until it is revealed. It is revealed by *Reconnaissance*, by accepting *Verification Mission*, or automatically when the asset is first used. When revealed, it applies **1.5× its normal spike (rounded down) and +3 blame**.
+**11. Covert Program** — Played with your own nuclear build · *Covert, Nuclear* · 2 IP
+- **Target:** none (it affects only you). It doesn't use a main action or a shadow slot.
+- **Effect:** the nuclear build it accompanies causes **no tension spike and no change to your public posture** until it is revealed. It is revealed by *Reconnaissance*, by accepting *Verification Mission*, or automatically when the asset is first used. When revealed, it applies **1.5× its normal spike (rounded down) and +3 blame**.
 - **Tension** 0 until revealed · **Blame** 0 until revealed
-- **Answered by:** none (no target, so the response slots are skipped).
 - **Primitives:** modify.
 
-**12. Security Sweep** — Response · *Covert*
-- **Target:** a Covert card (or *Destabilize Government*) aimed at you, your territory or a treaty you are part of.
-- **Effect:** cancel that card. If it was Covert, its player is exposed.
-- **Tension** 0 · **Blame** 0
-- **Answered by:** Inside Agent (counter).
-- **Primitives:** cancel.
+**12. Security Sweep** — Countermeasure · *Covert*
+- **Placed** face down in a shadow slot. It lasts until it triggers or for 3 rounds.
+- **Effect:** the first covert operation against you while it is active is canceled and its owner is **exposed**, whatever your counter-intelligence.
+- **Beaten by:** Inside Agent.
+- **Primitives:** cancel, reveal.
 
-**13. Inside Agent** — Counter · *Covert*
-- **Target:** a response card played against your root.
-- **Effect:** cancel that response card.
-- **Tension** 0 · **Blame** 0
-- **Answered by:** nothing directly. The defender may still use the stabilization slot.
-- **Primitives:** cancel.
+**13. Inside Agent** — Placed with an operation · *Covert* · 1 IP
+- **Effect:** the operation it accompanies ignores countermeasures, and its difficulty counts as 2 higher against counter-intelligence. It doesn't use an extra shadow slot.
+- **Primitives:** modify.
 
 ### Mobilization (4)
 
@@ -209,11 +202,11 @@ While tension is **40 or higher** (open crisis), every positive tension value pr
 - **Answered by:** none (the choice is the answer).
 - **Primitives:** reveal, modify.
 
-**24. Spoiler** — Root · *Covert, Diplomatic*
-- **Target:** one treaty between two other players.
+**24. Spoiler** — Operation · *Covert, Diplomatic* · 2 IP · difficulty 3
+- **Target:** one treaty between two other players. Either signatory's defenses can stop it.
 - **Effect:** the treaty ends **without breach penalties** to either signatory, and the re-signing cooldown applies. The two signatories' hostility toward each other rises by 1.
-- **Tension** +4 · **Blame** +2 (the blame applies only if exposed)
-- **Answered by:** Security Sweep (either signatory may respond).
+- **Tension** +2 when it succeeds · **Blame** only if exposed
+- **Stopped by:** counter-intelligence or Security Sweep of either signatory.
 - **Primitives:** cancel, modify.
 
 ## 3. Answer coverage
@@ -222,13 +215,13 @@ Every root has at least the non-card answer. This table shows which cards can an
 
 | Answer card | Slot | Answers |
 |---|---|---|
-| Security Sweep | Response | All Covert roots, and Destabilize Government |
-| Inside Agent | Counter | Any response card |
 | Smuggling Network | Response / Stabilization | Trade Embargo, Sanctions, interdiction operations |
 | Rapid Resupply | Response / Stabilization | Hostile operations and cards against your territory |
 | Hardened Shelters | Response / Stabilization | Hostile operations and cards against your territory |
 | Emergency Relay | Stabilization | Sabotage Crew on radar or command; any disabled detection |
-| Hotline | Stabilization | Any chain that raises tension |
+| Hotline | Stabilization | Any chain that raises tension, including Destabilize Government |
+
+Covert operations are never answered in a chain. They are stopped by counter-intelligence and Security Sweep, and Inside Agent beats those defenses (see the covert operations spec).
 
 Global cards (Global Embargo, Doomsday Rhetoric, Summit) are answered only by their printed choices, as main design §4 requires.
 
@@ -249,12 +242,12 @@ Global cards (Global Embargo, Doomsday Rhetoric, Summit) are answered only by th
 | Covert Program | 2 | | Verification Mission | 2 |
 | Security Sweep | 4 | | Spoiler | 2 |
 
-**Total: 57 cards.** 22 of them (about 40%) can be played as reactions. When the draw pile runs out, shuffle the discard pile to form a new one.
+**Total: 57 cards.** 15 of them can be played as chain reactions, and 7 more (Security Sweep and Inside Agent) are covert defense and support cards. When the draw pile runs out, shuffle the discard pile to form a new one.
 
 ## 5. Things to watch in playtests
 
 - **Ultimatum vs. Doomsday Rhetoric:** are the "world on fire" cards worth their tension and blame, or does nobody play them?
-- **Covert cards:** is the exposure risk enough to stop players from spamming Sabotage Crew and Reconnaissance? Security Sweep is the most common card (4 copies) for that reason.
+- **Covert cards:** does the IP cost limit operations enough? Are players investing in counter-intelligence, or ignoring defense? Security Sweep has 4 copies so traps turn up regularly.
 - **Summit:** does it end wars too easily? Attendees are protected from each other only until the end of the next round.
 - **Nuclear Test:** does giving up a warhead make it a real trade-off?
 - **Economic cards** depend on economy numbers that don't exist yet. Their values will move once production and supply rates are set.

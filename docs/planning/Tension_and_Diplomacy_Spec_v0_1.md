@@ -205,11 +205,12 @@ Dismantling a nuclear asset uses one **development order**. It removes the asset
 
 ## 6. Spying
 
-Intelligence cards interact with the hidden nuclear breakdown:
+Covert operations have their own spec: `Covert_Operations_Spec_v0_1.md`. In summary:
 
-- **Success** reveals information (warhead counts, which silos are loaded, the general location of a submarine) or applies a sabotage effect. A successful covert operation adds no tension, because nobody knows it happened.
-- **Exposure:** if the spy card is canceled (for example by Security Sweep), the spying player takes **+4 tension, +2 blame, and +2 hostility from the target**.
-- **Covert Program** (card): one nuclear build without its public spike or PP change. It is revealed if any spy mission inspects that player, or automatically when the asset is first used. When revealed, it applies **1.5× the original spike, plus 3 blame**.
+- Operations are placed face down during planning and go off 1–3 rounds later at the intelligence step, credited to an unknown actor, so turn timing doesn't reveal who did it.
+- An operation that succeeds, or fails without being traced, adds no blame.
+- An **exposed** operation costs its owner **+4 tension, +2 blame, and +2 hostility from the target**.
+- **Covert Program** hides one nuclear build: no public spike or posture change until it is revealed. It is revealed by Reconnaissance, by accepting Verification Mission, or when the asset is first used, and then applies **1.5× the original spike, plus 3 blame**.
 
 Being able to see an opponent's breakdown matters because it supports bluffing: a high posture number may hide empty silos.
 
