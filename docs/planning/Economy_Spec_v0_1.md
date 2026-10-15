@@ -29,7 +29,7 @@ Anything above a reserve cap is lost at upkeep.
 | Installation | Requires | Output per upkeep | Power draw |
 |---|---|---|---|
 | **Industry**, Construction mode | — | 3 P (+1 on ore) | 1 |
-| **Industry**, Supply mode | — | 3 S (+1 on ore) | 1 |
+| **Industry**, Supply mode | — | 4 S (+1 on ore) | 1 |
 | **Farm** | Farmland | 4 F | 0 |
 | Farm with **Irrigation** upgrade | Farmland and water in the network | 6 F | 0 |
 | **Waterworks** | Water source | 4 W | 1 |
@@ -149,7 +149,7 @@ Both use a development order. Clearing a ruined site to build something else cos
 
 Read the starting position this way:
 - **Food and water are exactly balanced.** The capital's water source is unused, so building a second waterworks there is the obvious insurance against a strike on the Heartland.
-- **Supplies run down.** The standard starting military drains 2 per round. After about 4 rounds the player must move an industry to Supply mode, build more industry, or cut the army.
+- **Supplies run down.** The standard starting military drains 2 per round. After about 4 rounds the player must move an industry to Supply mode, build more industry, or cut the army. Supply mode is deliberately more efficient: switching the Uplands industry gives +5 supplies for −4 production.
 - **Power is nearly full.** Almost any new powered building needs a second power station first.
 
 ### 6.2 Starting score
@@ -163,7 +163,7 @@ For scoring, **civilian installations** are industry, farms, waterworks, power s
 ### 7.1 Order
 
 1. **Networks:** recalculate supply networks and power grids.
-2. **Output:** collect production, food, water, supplies and IP from operational, powered installations.
+2. **Output:** collect production, food, water, supplies and IP from operational, powered installations, then subtract the exclave cost (§7.2).
 3. **Population:** consume food and water.
 4. **Military:** pay supply upkeep; refill magazines in connected territories.
 5. **Repairs:** advance repairs and rebuilds.
@@ -175,6 +175,7 @@ For scoring, **civilian installations** are industry, farms, waterworks, power s
 - **Supply network:** territories you own that connect to each other over land and aren't contested (main design §2). Food, water and supplies are shared within a network. Production and IP are national and aren't tied to networks.
 - **Power grid:** the same set of territories. Each grid has its own power capacity.
 - **Cut off:** a territory that is separated from the rest of your network forms its own network, and can't use reserves or output from the main one.
+- **Exclaves:** a country split into several networks keeps going. Every network still adds its production and IP to the national total, but **each network beyond the largest costs −1 P per upkeep** in administration. This lets isolated pieces of a country, such as a Kaliningrad-style exclave, survive at a cost.
 
 ### 7.3 Shortages
 
@@ -236,9 +237,17 @@ For scoring, **civilian installations** are industry, farms, waterworks, power s
 - Unsupplied units can't attack, and are disbanded after a second unpaid upkeep.
 - Nothing ever exceeds its reserve cap after upkeep.
 
-## 13. Open questions
+## 13. Decisions so far
 
-1. Should Supply mode industry produce more than Construction mode, to make armies less painful to maintain?
-2. Is the default supply drain of 2 per round too harsh, or does it create the right early decision?
-3. Should production be tied to supply networks, so a cut-off territory's industry can't contribute nationally?
-4. Is a 15-production cap high enough to save up for a submarine (12) plus something else?
+| Question | Decision |
+|---|---|
+| Supply mode efficiency | Supply mode produces 4 (+1 on ore) against 3 for construction. |
+| Starting supply drain | −2 per round as a starting value. |
+| Split countries | Allowed. Production stays national, with −1 P per upkeep for each extra network. |
+| Production cap | 15 for now. It may be too low; watch it in playtests and try 20 if players hit it often. |
+
+Every number here is a starting value to tune once the game can be played.
+
+## 14. Open questions
+
+1. Should the exclave cost grow with distance or the number of territories, or stay a flat −1 per network?
