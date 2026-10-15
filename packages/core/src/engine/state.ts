@@ -24,6 +24,8 @@ export interface PlayerState {
   hand: string[];
   /** Ammunition stockpiled nationally, by ammunition kind (loaded weapons live on installations). */
   stock: Record<string, number>;
+  /** Ammunition built under Covert Program, not yet revealed. */
+  hiddenStock: Record<string, number>;
   reactionPoints: number;
   blame: number;
   infamy: number;
@@ -65,6 +67,8 @@ export interface Installation {
   repairCompletesRound: number | null;
   /** Conventional hits taken toward the next condition step (hardened installations). */
   hardHits: number;
+  /** Built under Covert Program and not yet revealed. */
+  hidden: boolean;
 }
 
 export interface UnitStack {
@@ -76,6 +80,8 @@ export interface UnitStack {
   count: number;
   /** Formations in this stack that went unsupplied at the last upkeep. */
   unsupplied: number;
+  /** Built under Covert Program and not yet revealed. */
+  hidden: boolean;
 }
 
 export interface TensionChange {
@@ -150,6 +156,12 @@ export interface GameState {
   actionQueue: QueuedAction[];
   /** The event chain or proposal being resolved, if any. */
   chain: Chain | null;
+  covert: {
+    operations: CovertOperation[];
+    countermeasures: { id: string; owner: PlayerId; card: string; untilRound: number }[];
+    /** The true record of resolved operations, used to check accusations. */
+    history: CovertRecord[];
+  };
   /** Crisis votes cast this round, secret until all are in. */
   crisisVotes: Record<PlayerId, CrisisVote>;
   /** Last accepted command sequence number per player. */
@@ -249,11 +261,11 @@ export interface QueuedAction {
 // ------------------------------------------------------------ planning orders
 
 export type DevelopmentOrder =
-  | { type: 'build'; kind: string; territory: string; mode?: string }
+  | { type: 'build'; kind: string; territory: string; mode?: string; covert?: boolean }
   | { type: 'upgrade'; installation: string }
   | { type: 'repair'; installation: string }
-  | { type: 'recruit'; unit: string; location: string }
-  | { type: 'ammunition'; kind: string }
+  | { type: 'recruit'; unit: string; location: string; covert?: boolean }
+  | { type: 'ammunition'; kind: string; covert?: boolean }
   | { type: 'dismantle'; installation: string }
   | { type: 'disband'; stack: string; count: number }
   | { type: 'destroyAmmunition'; kind: string; count: number };
@@ -275,6 +287,40 @@ export type MainAction =
   | { type: 'card'; card: string; target?: string; params?: CardParams }
   | { type: 'proposal'; proposal: ProposalKind; target?: PlayerId; second?: PlayerId };
 
+export type ShadowMarker =
+  | { type: 'blank' }
+  | {
+      type: 'operation';
+      card: string;
+      target: string;
+      /** Extra IP spent to raise difficulty. */
+      boost?: number;
+      /** Pay to choose the exact fuse instead of a random one. */
+      fuse?: number;
+      /** Attach an Inside Agent card from hand. */
+      insideAgent?: boolean;
+    }
+  | { type: 'countermeasure'; card: string };
+
+export interface CovertOperation {
+  id: string;
+  owner: PlayerId;
+  card: string;
+  target: string;
+  fireRound: number;
+  difficulty: number;
+  ignoresCountermeasures: boolean;
+}
+
+export interface CovertRecord {
+  id: string;
+  round: number;
+  owner: PlayerId;
+  victims: PlayerId[];
+  card: string;
+  outcome: 'success' | 'foiled' | 'exposed' | 'fizzled';
+}
+
 export interface TradeTransfer {
   to: PlayerId;
   resource: 'food' | 'water' | 'supplies';
@@ -294,6 +340,10 @@ export interface PlanningOrders {
   trades: TradeTransfer[];
   /** Treaties to leave without penalty because the other party is a pariah. */
   leaveTreaties: string[];
+  /** Face-down shadow markers; exactly as many as the player's shadow slots. */
+  shadow: ShadowMarker[];
+  /** At most one accusation per round about a covert effect against you. */
+  accusation: { accused: PlayerId; record: string } | null;
   main: MainAction;
 }
 
@@ -305,6 +355,8 @@ export const PASS_ORDERS: PlanningOrders = {
   counterIntel: 0,
   trades: [],
   leaveTreaties: [],
+  shadow: [],
+  accusation: null,
   main: { type: 'pass' },
 };
 

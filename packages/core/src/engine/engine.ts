@@ -6,6 +6,7 @@
 import { checkSeq, type CommandEnvelope } from '../commands.js';
 import { cardDef, reactionLegal } from './cards.js';
 import type { MatchContext } from './context.js';
+import { runIntelligence } from './covert.js';
 import { crisisCheck, resolveCrisisVote } from './crisis.js';
 import { safeOption } from './effects.js';
 import type { EventSink, GameEvent } from './events.js';
@@ -184,7 +185,7 @@ function runUntilDecision(ctx: MatchContext, state: GameState, events: EventSink
         state.phase = 'intelligence';
         break;
       case 'intelligence':
-        // Covert operations resolve here (slice 4e).
+        runIntelligence(ctx, state, events);
         state.phase = 'events';
         break;
       case 'events':

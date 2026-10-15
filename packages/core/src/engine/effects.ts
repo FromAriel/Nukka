@@ -8,6 +8,7 @@ import { mulPermille } from '../fixed.js';
 import { territoryDef, type MatchContext } from './context.js';
 import { endTreaty, treatiesBetween } from './diplomacy.js';
 import type { EventSink } from './events.js';
+import { revealCovertPrograms } from './hidden-assets.js';
 import { addModifier } from './modifiers.js';
 import { rollInt } from './random.js';
 import { addUnits, drawCards } from './setup.js';
@@ -20,6 +21,8 @@ export interface Bindings {
   readonly targetOwner: PlayerId | null;
   readonly chooser?: PlayerId;
   readonly chainTarget?: string | null;
+  /** Covert operations against a treaty: its signatories. */
+  readonly signatories?: readonly PlayerId[];
 }
 
 /** Chain-wide adjustments set by stabilization cards (Hotline, Smuggling Network). */
@@ -107,6 +110,14 @@ function applyEffect(run: EffectRun, e: Effect): void {
       if (run.adjust.noHostility) return;
       const toward = ref(run, e['toward']);
       const amount = num(e['amount']);
+      if (e['between'] === '$signatories') {
+        const [a, b] = run.bindings.signatories ?? [];
+        if (a && b) {
+          changeHostility(ctx, state, a, b, amount);
+          changeHostility(ctx, state, b, a, amount);
+        }
+        return;
+      }
       if (!toward) return;
       if (e['from'] === 'others-except-self') {
         for (const id of state.playerIds) {
@@ -186,6 +197,40 @@ function applyEffect(run: EffectRun, e: Effect): void {
       }
       throw new Error(`${run.cardName}: unsupported damage effect`);
     }
+    case 'disable': {
+      const installation = ref(run, e['installation']);
+      const inst = installation ? state.installations[installation] : undefined;
+      if (inst) {
+        addModifier(state, {
+          player: inst.owner,
+          stat: 'disabled',
+          amount: 1,
+          data: { installation: inst.id },
+          fromRound: state.round,
+          untilRound: state.round,
+        });
+        events.push({
+          type: 'InstallationDisabled',
+          visibility: 'public',
+          installation: inst.id,
+          untilRound: state.round,
+        });
+        return;
+      }
+      const territory = ref(run, e['territory']);
+      const t = territory ? state.territories[territory] : undefined;
+      if (t && e['status'] === 'contested') {
+        t.contestedRounds = Math.max(t.contestedRounds, num(e['rounds'], 1));
+        events.push({
+          type: 'TerritoryContested',
+          visibility: 'public',
+          territory,
+          rounds: t.contestedRounds,
+        });
+        return;
+      }
+      throw new Error(`${run.cardName}: unsupported disable effect`);
+    }
     case 'discard': {
       const player = ref(run, e['player']);
       const p = player ? state.players[player] : undefined;
@@ -207,7 +252,12 @@ function applyEffect(run: EffectRun, e: Effect): void {
       transfer(run, e);
       return;
     case 'cancel': {
-      if (str(e['treaty']) === undefined || e['operation'] !== undefined) return; // covert cancels: slice 4e
+      if (str(e['treaty']) === undefined || e['operation'] !== undefined) return; // countermeasures resolve in covert.ts
+      if (e['treaty'] === '$target') {
+        const treaty = state.treaties.find((t) => t.id === run.bindings.target);
+        if (treaty) endTreaty(ctx, state, events, treaty, { reason: run.cardName });
+        return;
+      }
       const between = (Array.isArray(e['between']) ? e['between'] : [])
         .map((v) => ref(run, v))
         .filter((v): v is string => v !== null);
@@ -267,7 +317,9 @@ function applyEffect(run: EffectRun, e: Effect): void {
       if (!of || !to) return;
       const subjects = Array.isArray(e['subject']) ? e['subject'] : [e['subject']];
       for (const subject of subjects) {
-        if (typeof subject === 'string')
+        if (subject === 'covertPrograms')
+          revealCovertPrograms(ctx, state, events, of, run.cardName);
+        else if (typeof subject === 'string')
           state.reveals.push({ subject, of, to, untilRound: state.round });
       }
       return;

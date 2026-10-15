@@ -71,6 +71,7 @@ export function createMatch(config: MatchConfig): { ctx: MatchContext; state: Ga
     reveals: [],
     actionQueue: [],
     chain: null,
+    covert: { operations: [], countermeasures: [], history: [] },
     lastSeq: {},
     result: null,
   };
@@ -82,6 +83,7 @@ export function createMatch(config: MatchConfig): { ctx: MatchContext; state: Ga
       reserves: { ...ruleset.economy.startingReserves },
       hand: [],
       stock: compactRecord(scenario.stock),
+      hiddenStock: {},
       reactionPoints: ruleset.match.reactionPointsPerRound,
       blame: 0,
       infamy: 0,
@@ -158,6 +160,7 @@ export function addInstallation(
     upgraded?: boolean;
     loaded?: Record<string, number>;
     mode?: string;
+    hidden?: boolean;
   },
 ): Installation {
   const rules = installationRules(ctx, spec.kind);
@@ -176,6 +179,7 @@ export function addInstallation(
     magazine: rules.magazine,
     repairCompletesRound: null,
     hardHits: 0,
+    hidden: spec.hidden ?? false,
   };
   state.installations[inst.id] = inst;
   return inst;
@@ -187,15 +191,21 @@ export function addUnits(
   kind: string,
   location: string,
   count: number,
+  hidden = false,
 ): void {
   for (const [, stack] of sortedEntries(state.units)) {
-    if (stack.owner === owner && stack.kind === kind && stack.location === location) {
+    if (
+      stack.owner === owner &&
+      stack.kind === kind &&
+      stack.location === location &&
+      stack.hidden === hidden
+    ) {
       stack.count += count;
       return;
     }
   }
   const id = newId(state, 'u');
-  state.units[id] = { id, owner, kind, location, count, unsupplied: 0 };
+  state.units[id] = { id, owner, kind, location, count, unsupplied: 0, hidden };
 }
 
 /** Draws cards into a hand, reshuffling the discard pile into a new draw pile when empty. */

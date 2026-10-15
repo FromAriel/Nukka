@@ -6,6 +6,13 @@ import { sortedEntries } from '../collections.js';
 import { ceilDiv, mulPermille } from '../fixed.js';
 import { installationRules, territoryDef, type MatchContext } from './context.js';
 import { rootCardProblems } from './cards.js';
+import {
+  cardsUsed,
+  covertIpCost,
+  placeShadowMarkers,
+  resolveAccusation,
+  shadowProblems,
+} from './covert.js';
 import { networks, devastationEffects } from './derived.js';
 import {
   leaveTreaty,
@@ -305,10 +312,34 @@ export function validatePlanning(
     else if (!(mode in modes)) problems.push(`modes.${id}: unknown mode "${mode}"`);
   }
 
-  if (!Number.isSafeInteger(orders.counterIntel) || orders.counterIntel < 0)
+  problems.push(...shadowProblems(ctx, state, player, orders));
+  const counts = new Map<string, number>();
+  for (const card of cardsUsed(orders)) counts.set(card, (counts.get(card) ?? 0) + 1);
+  for (const [card, need] of counts) {
+    const have = p.hand.filter((c) => c === card).length;
+    if (have < need) problems.push(`hand: these orders use ${need} × ${card}, you hold ${have}`);
+  }
+  for (const order of orders.development) {
+    if ('covert' in order && order.covert) {
+      const asset =
+        order.type === 'build' || order.type === 'ammunition'
+          ? order.kind
+          : order.type === 'recruit'
+            ? order.unit
+            : '';
+      if ((ctx.ruleset.tension.buildupSpikes[asset] ?? 0) === 0) {
+        problems.push(`covert: only nuclear builds can be hidden, not ${asset}`);
+      }
+    }
+  }
+  const covertIp = covertIpCost(ctx, orders);
+  if (!Number.isSafeInteger(orders.counterIntel) || orders.counterIntel < 0) {
     problems.push('counterIntel must be a non-negative integer');
-  else if (orders.counterIntel > p.reserves.intelligence)
-    problems.push('counterIntel exceeds your intelligence reserve');
+  } else if (orders.counterIntel + covertIp > p.reserves.intelligence) {
+    problems.push(
+      `intelligence: orders cost ${orders.counterIntel + covertIp} IP; you have ${p.reserves.intelligence}`,
+    );
+  }
 
   const main = orders.main;
   if (main.type === 'card')
@@ -385,6 +416,23 @@ export function resolvePlanning(ctx: MatchContext, state: GameState, events: Eve
     }
     p.reserves.intelligence -= orders.counterIntel;
     p.counterIntel += orders.counterIntel;
+    placeShadowMarkers(ctx, state, player, orders);
+    for (const order of orders.development) {
+      if ('covert' in order && order.covert) {
+        const i = p.hand.indexOf('covert-program');
+        if (i >= 0) state.deck.covertDiscard.push(...p.hand.splice(i, 1));
+      }
+    }
+    if (orders.accusation) {
+      resolveAccusation(
+        ctx,
+        state,
+        events,
+        player,
+        orders.accusation.accused,
+        orders.accusation.record,
+      );
+    }
     const tradePermille = devastationEffects(ctx, state.devastation).tradePermille;
     for (const trade of orders.trades) {
       const amount = Math.min(trade.amount, p.reserves[trade.resource]);
@@ -429,23 +477,25 @@ function applyDevelopment(
         territory: order.territory,
         site,
         ...(order.mode !== undefined ? { mode: order.mode } : {}),
+        hidden: order.covert === true,
       });
       events.push({
         type: 'InstallationBuilt',
-        visibility: 'public',
+        visibility: order.covert ? { players: [player] } : 'public',
         player,
         installation: inst.id,
         kind: order.kind,
         territory: order.territory,
       });
-      changeTension(
-        ctx,
-        state,
-        events,
-        buildupSpike(ctx, order.kind),
-        player,
-        `${player} built ${order.kind}`,
-      );
+      if (!order.covert)
+        changeTension(
+          ctx,
+          state,
+          events,
+          buildupSpike(ctx, order.kind),
+          player,
+          `${player} built ${order.kind}`,
+        );
       return;
     }
     case 'upgrade': {
@@ -474,29 +524,31 @@ function applyDevelopment(
       return;
     }
     case 'recruit': {
-      addUnits(state, player, order.unit, order.location, 1);
+      addUnits(state, player, order.unit, order.location, 1, order.covert === true);
       const sea = ctx.ruleset.units.units[order.unit]?.domain === 'sea';
       events.push({
         type: 'UnitsRecruited',
-        visibility: sea ? { players: [player] } : 'public',
+        visibility: sea || order.covert ? { players: [player] } : 'public',
         player,
         unit: order.unit,
         location: order.location,
       });
-      changeTension(
-        ctx,
-        state,
-        events,
-        buildupSpike(ctx, order.unit),
-        player,
-        `${player} deployed ${order.unit}`,
-      );
+      if (!order.covert)
+        changeTension(
+          ctx,
+          state,
+          events,
+          buildupSpike(ctx, order.unit),
+          player,
+          `${player} deployed ${order.unit}`,
+        );
       return;
     }
     case 'ammunition': {
       const ammo = ctx.ruleset.units.ammunition[order.kind];
       if (!ammo) return;
-      p.stock[order.kind] = (p.stock[order.kind] ?? 0) + ammo.quantity;
+      const store = order.covert ? p.hiddenStock : p.stock;
+      store[order.kind] = (store[order.kind] ?? 0) + ammo.quantity;
       events.push({
         type: 'AmmunitionProduced',
         visibility: { players: [player] },
@@ -504,14 +556,15 @@ function applyDevelopment(
         kind: order.kind,
         quantity: ammo.quantity,
       });
-      changeTension(
-        ctx,
-        state,
-        events,
-        buildupSpike(ctx, order.kind),
-        player,
-        `${player} produced ${order.kind}`,
-      );
+      if (!order.covert)
+        changeTension(
+          ctx,
+          state,
+          events,
+          buildupSpike(ctx, order.kind),
+          player,
+          `${player} produced ${order.kind}`,
+        );
       return;
     }
     case 'dismantle': {

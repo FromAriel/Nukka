@@ -164,7 +164,7 @@ describe('planning orders', () => {
         ],
       }).join(),
     ).toMatch(/at most 2 development orders/);
-    expect(check({ counterIntel: 99 }).join()).toMatch(/exceeds/);
+    expect(check({ counterIntel: 99 }).join()).toMatch(/orders cost 99 IP; you have 2/);
   });
 
   it('switches industry to supply mode at the next upkeep', () => {

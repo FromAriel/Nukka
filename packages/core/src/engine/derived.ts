@@ -61,6 +61,7 @@ export function installationsIn(state: GameState, territories: readonly string[]
 /** Ids of installations that have power this round, grid by grid, in priority order. */
 export function poweredInstallations(ctx: MatchContext, state: GameState): Set<string> {
   const powered = new Set<string>();
+  const disabled = disabledInstallations(state);
   const priority = ctx.ruleset.economy.powerPriority;
   const rank = (kind: string) => {
     const i = priority.indexOf(kind);
@@ -71,12 +72,19 @@ export function poweredInstallations(ctx: MatchContext, state: GameState): Set<s
       const insts = installationsIn(state, network.territories).filter((i) => i.owner === player);
       let capacity = 0;
       for (const inst of insts) {
-        if (inst.condition === 'ruined' || inst.repairCompletesRound !== null) continue;
+        if (
+          inst.condition === 'ruined' ||
+          inst.repairCompletesRound !== null ||
+          disabled.has(inst.id)
+        )
+          continue;
         const supply = installationRules(ctx, inst.kind).powerSupply;
         capacity += inst.condition === 'impaired' ? floorDiv(supply, 2) : supply;
       }
       const consumers = insts
-        .filter((i) => i.condition !== 'ruined' && i.repairCompletesRound === null)
+        .filter(
+          (i) => i.condition !== 'ruined' && i.repairCompletesRound === null && !disabled.has(i.id),
+        )
         .sort((a, b) => rank(a.kind) - rank(b.kind) || (a.id < b.id ? -1 : 1));
       for (const inst of consumers) {
         const draw = installationRules(ctx, inst.kind).powerDraw;
@@ -90,6 +98,16 @@ export function poweredInstallations(ctx: MatchContext, state: GameState): Set<s
     }
   }
   return powered;
+}
+
+/** Installations disabled this round (for example by Sabotage Crew). */
+export function disabledInstallations(state: GameState): Set<string> {
+  const ids = new Set<string>();
+  for (const m of state.modifiers) {
+    if (m.stat === 'disabled' && m.fromRound <= state.round && state.round <= m.untilRound)
+      ids.add(String(m.data['installation']));
+  }
+  return ids;
 }
 
 /** Whether an installation is working: not ruined, not under repair, and powered if it needs power. */
@@ -189,17 +207,17 @@ export function populationIn(state: GameState, territories: readonly string[]): 
 
 // ------------------------------------------------------------ posture
 
-/** A player's nuclear posture points (Tension spec §2.2). */
+/** A player's public nuclear posture points (Tension spec §2.2); hidden Covert Program builds don't count. */
 export function posturePoints(ctx: MatchContext, state: GameState, player: PlayerId): number {
   const pp = ctx.ruleset.tension.posturePoints;
   let total = 0;
   for (const [, inst] of sortedEntries(state.installations)) {
-    if (inst.owner !== player || inst.condition === 'ruined') continue;
+    if (inst.owner !== player || inst.condition === 'ruined' || inst.hidden) continue;
     total += pp[inst.kind] ?? 0;
     for (const [ammo, count] of sortedEntries(inst.loaded)) total += (pp[ammo] ?? 0) * count;
   }
   for (const [, unit] of sortedEntries(state.units)) {
-    if (unit.owner === player) total += (pp[unit.kind] ?? 0) * unit.count;
+    if (unit.owner === player && !unit.hidden) total += (pp[unit.kind] ?? 0) * unit.count;
   }
   for (const [ammo, count] of sortedEntries(state.players[player]?.stock ?? {}))
     total += (pp[ammo] ?? 0) * count;

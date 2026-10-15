@@ -1,5 +1,6 @@
 export * from './cards.js';
 export * from './context.js';
+export * from './covert.js';
 export * from './crisis.js';
 export * from './derived.js';
 export * from './diplomacy.js';
@@ -7,6 +8,7 @@ export * from './effects.js';
 export * from './engine.js';
 export * from './events.js';
 export * from './events-phase.js';
+export * from './hidden-assets.js';
 export * from './modifiers.js';
 export * from './planning.js';
 export * from './random.js';
