@@ -23,6 +23,8 @@ Where the engine currently differs from, or fills gaps in, the planning specs. E
 - **Round 1 has no upkeep:** the match starts at round 1 planning with the starting reserves and hands.
 - **Unfilled shadow slots** are padded with blanks by the engine, identically for every player.
 - **Operation tension** is applied when the operation is declared in the events phase, not when it is fought.
+- **Covert Program reveal on use:** a hidden asset that launches or fires (silo, submarine, bomber, launcher, battery) reveals the owner's whole covert program in the combat aftermath, before damage applies. Committing a plan that names it does not.
+- **Tied neutral claims:** when the defenders of a neutral territory are wiped out and two or more attackers hold its garrison in equal numbers, it stays neutral and its militia resets to `match.neutral.militiaAfterTiedClaim`.
 
 ## Combat
 

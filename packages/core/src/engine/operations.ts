@@ -9,6 +9,7 @@ import { installationRules, territoryDef, type MatchContext } from './context.js
 import { breachIfProtected, relation, treatiesBetween } from './diplomacy.js';
 import { transferTerritory } from './effects.js';
 import type { EventSink } from './events.js';
+import { revealCovertPrograms } from './hidden-assets.js';
 import { activeModifiers } from './modifiers.js';
 import { addUnits, newId } from './setup.js';
 import { changeBlame, changeHostility, changeInfamy, changeTension, isPariah } from './tension.js';
@@ -464,8 +465,21 @@ export function applyCombatResult(
   events: EventSink,
   result: CombatResult,
 ): void {
+  // A hidden Covert Program asset that launches or fires gives the program away (Covert spec §8).
+  const revealed = new Set<PlayerId>();
+  for (const id of result.assetsUsed) {
+    const asset = state.installations[id] ?? state.units[id];
+    if (asset?.hidden) revealed.add(asset.owner);
+  }
+  for (const player of [...revealed].sort())
+    revealCovertPrograms(ctx, state, events, player, 'used in combat');
+
   for (const hit of result.installationHits)
     damageInstallation(state, hit.installation, hit.steps, events);
+  for (const partial of result.hardHits) {
+    const inst = state.installations[partial.installation];
+    if (inst) inst.hardHits = inst.condition === 'ruined' ? 0 : partial.hits;
+  }
   for (const loss of result.unitLosses) {
     const stack = state.units[loss.stack];
     if (!stack) continue;
@@ -475,6 +489,13 @@ export function applyCombatResult(
   for (const loss of result.militiaLosses) {
     const t = state.territories[loss.territory];
     if (t) t.militia = Math.max(0, t.militia - loss.count);
+  }
+  for (const tie of result.tiedClaims) {
+    const t = state.territories[tie.territory];
+    if (t && t.owner === null) {
+      t.militia = ctx.ruleset.match.neutral.militiaAfterTiedClaim;
+      events.push({ type: 'NeutralClaimTied', visibility: 'public', territory: tie.territory });
+    }
   }
   for (const use of result.ammunitionUsed) {
     const p = state.players[use.player];

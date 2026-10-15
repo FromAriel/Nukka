@@ -1,3 +1,4 @@
+import { autopilotResolver } from '@nukka/combat';
 import {
   EMPTY_RESULT,
   sortedEntries,
@@ -197,6 +198,32 @@ describe('operations', () => {
     expect(inst(after, 'B-uplands', 'industry').condition).toBe('impaired');
     expect(tensionFrom(events, 'A captured B-uplands')).toBe(5);
   });
+
+  it('a tied neutral claim leaves the territory neutral with reset militia', () => {
+    const { resolver } = scripted(() => ({
+      militiaLosses: [{ territory: 'N-lakeshore', count: 2 }],
+      tiedClaims: [{ territory: 'N-lakeshore' }],
+    }));
+    const { ctx, state } = match({}, { combat: resolver });
+    const { state: after, events } = round(ctx, state, { A: assault(state, 'N-lakeshore') });
+    expect(after.territories['N-lakeshore']).toMatchObject({
+      owner: null,
+      militia: ctx.ruleset.match.neutral.militiaAfterTiedClaim,
+    });
+    expect(events.some((e) => e.type === 'NeutralClaimTied')).toBe(true);
+  });
+
+  it('partial hits on a hardened installation are kept for the next raid', () => {
+    const { resolver } = scripted((s) => ({
+      hardHits: [{ installation: inst(s, 'B-capital', 'command').id, hits: 1 }],
+    }));
+    const { ctx, state } = match({}, { combat: resolver });
+    const { state: after } = round(ctx, state, { A: assault(state, 'N-lakeshore') });
+    expect(inst(after, 'B-capital', 'command')).toMatchObject({
+      hardHits: 1,
+      condition: 'operational',
+    });
+  });
 });
 
 describe('nuclear release and use', () => {
@@ -288,5 +315,42 @@ describe('nuclear release and use', () => {
           : undefined,
       ),
     ).toThrow(/ceasefire bars launches/);
+  });
+
+  it('launching from a hidden silo reveals the covert program with its penalty', () => {
+    const { ctx, state } = match(
+      {},
+      { scenario: 'standoff', tension: 100, combat: autopilotResolver },
+    );
+    const silo = inst(state, 'A-uplands', 'silo');
+    silo.hidden = true;
+    const { state: after, events } = round(ctx, state, {}, (d) =>
+      d.kind === 'commit' && d.player === 'A'
+        ? {
+            type: 'CommitNuclear',
+            plans: [
+              {
+                id: '',
+                delivery: silo.id,
+                count: 1,
+                target: 'B-capital',
+                fallback: null,
+                wave: 0,
+                policy: 'scheduled',
+                trigger: null,
+              },
+            ],
+          }
+        : undefined,
+    );
+    expect(after.installations[silo.id]!.hidden).toBe(false);
+    expect(events).toContainEqual(
+      expect.objectContaining({
+        type: 'CovertProgramRevealed',
+        player: 'A',
+        assets: ['silo'],
+        how: 'used in combat',
+      }),
+    );
   });
 });

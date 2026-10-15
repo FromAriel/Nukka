@@ -21,11 +21,17 @@ export interface CombatInput {
 export interface CombatResult {
   /** Condition steps lost per installation; ruined installations lose their contents. */
   readonly installationHits: readonly { installation: string; steps: number }[];
+  /** New stored partial-hit count of each hardened installation hit (below one condition step). */
+  readonly hardHits: readonly { installation: string; hits: number }[];
   readonly unitLosses: readonly { stack: string; count: number }[];
   readonly militiaLosses: readonly { territory: string; count: number }[];
   readonly population: readonly { territory: string; killed: number; displaced: number }[];
   /** Ground assaults that met the capture condition (Weapons spec §9). */
   readonly captures: readonly { territory: string; by: PlayerId }[];
+  /** Neutral territories cleared of defenders where attackers tied; they stay neutral. */
+  readonly tiedClaims: readonly { territory: string }[];
+  /** Installations and unit stacks that launched or fired; hidden ones are revealed (Covert spec §8). */
+  readonly assetsUsed: readonly string[];
   readonly ammunitionUsed: readonly {
     player: PlayerId;
     kind: string;
@@ -41,10 +47,13 @@ export interface CombatResult {
 
 export const EMPTY_RESULT: CombatResult = {
   installationHits: [],
+  hardHits: [],
   unitLosses: [],
   militiaLosses: [],
   population: [],
   captures: [],
+  tiedClaims: [],
+  assetsUsed: [],
   ammunitionUsed: [],
   magazinesUsed: [],
   detonations: [],

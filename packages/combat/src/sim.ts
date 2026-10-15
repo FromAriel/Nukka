@@ -172,7 +172,10 @@ export class CombatSim {
   private readonly detonations: { player: PlayerId; territory: string; plan: string }[] = [];
   private readonly lanes = new Map<string, { a: string; b: string }>();
   private readonly destroyedStacks = new Set<string>();
+  /** Installations and stacks that launched or fired. */
+  private readonly used = new Set<string>();
   private captures: { territory: string; by: PlayerId }[] = [];
+  private tiedClaims: { territory: string }[] = [];
 
   constructor(
     private readonly ctx: MatchContext,
@@ -372,6 +375,7 @@ export class CombatSim {
             if (!stack || !rules) continue;
             const bombs =
               rules.roles?.['strike']?.conventionalBombs ?? rules.carries?.conventionalBombs ?? 0;
+            if (f.count > 0) this.used.add(stack.id);
             for (let i = 0; i < Math.min(f.count, stack.count); i++) {
               this.useAmmo(op.attacker, 'conventionalBombs', bombs);
               this.threats.push(
@@ -401,6 +405,7 @@ export class CombatSim {
             if (!launcher) continue;
             const count = launcher.loaded['conventionalMissiles'] ?? 0;
             this.useAmmo(op.attacker, 'conventionalMissiles', count, launcherId);
+            if (count > 0) this.used.add(launcherId);
             for (let i = 0; i < count; i++)
               this.launchMissile(
                 op.attacker,
@@ -663,6 +668,7 @@ export class CombatSim {
       if (silo) {
         if (this.ruined.has(silo.id) || silo.condition !== 'operational') continue; // destroyed launchers can't fire later waves
         this.useAmmo(launch.owner, 'warheads', plan.count, silo.id);
+        this.used.add(silo.id);
         for (let i = 0; i < plan.count; i++)
           this.launchMissile(
             launch.owner,
@@ -678,6 +684,7 @@ export class CombatSim {
       } else if (stack?.kind === 'submarine') {
         if (this.destroyedStacks.has(stack.id)) continue;
         this.useAmmo(launch.owner, 'warheads', plan.count);
+        this.used.add(stack.id);
         for (let i = 0; i < plan.count; i++)
           this.launchMissile(
             launch.owner,
@@ -693,6 +700,7 @@ export class CombatSim {
       } else if (stack?.kind === 'bomber') {
         const rules = this.ctx.ruleset.units.units['bomber']!;
         this.useAmmo(launch.owner, 'gravityBombs', plan.count);
+        this.used.add(stack.id);
         for (let i = 0; i < plan.count; i++)
           this.threats.push(
             this.flyer(
@@ -1068,6 +1076,7 @@ export class CombatSim {
     const { ctx, state } = this;
     const radius = ctx.ruleset.combat.garrisonRadius * MILLI;
     this.captures = [];
+    this.tiedClaims = [];
     for (const battle of [...new Set(this.ground.map((g) => g.battle))].sort()) {
       const defendersLeft = this.ground.some(
         (g) => g.battle === battle && g.side === 'defender' && g.alive,
@@ -1088,18 +1097,25 @@ export class CombatSim {
       const ranked = [...holding.entries()].sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : 1));
       if (ranked.length > 0 && (ranked.length === 1 || ranked[0]![1] > ranked[1]![1]))
         this.captures.push({ territory: battle, by: ranked[0]![0] });
+      else if (ranked.length > 1 && state.territories[battle]?.owner === null)
+        this.tiedClaims.push({ territory: battle });
     }
 
     const hardened = ctx.ruleset.combat.hardenedHitsPerStep;
     const steps = new Map<string, number>(this.nuclearSteps);
+    const hardHits: { installation: string; hits: number }[] = [];
     for (const [id, hits] of [...this.installationHits.entries()].sort()) {
       const inst = state.installations[id];
       if (!inst) continue;
-      const n = installationRules(ctx, inst.kind).hardened
-        ? floorDiv(inst.hardHits + hits, hardened)
-        : hits;
+      let n = hits;
+      if (installationRules(ctx, inst.kind).hardened) {
+        const total = inst.hardHits + hits;
+        n = floorDiv(total, hardened);
+        hardHits.push({ installation: id, hits: total - n * hardened });
+      }
       steps.set(id, Math.min(2, (steps.get(id) ?? 0) + n));
     }
+    for (const b of this.batteries) if (b.shots > 0) this.used.add(b.id);
 
     const population = new Map<string, { killed: number; displaced: number }>();
     for (const [territory, hits] of [...this.populationHits.entries()].sort()) {
@@ -1140,12 +1156,15 @@ export class CombatSim {
         .filter(([, n]) => n > 0)
         .sort()
         .map(([installation, n]) => ({ installation, steps: n })),
+      hardHits,
       unitLosses: [...this.unitLosses.entries()].sort().map(([stack, count]) => ({ stack, count })),
       militiaLosses: [...this.militiaLosses.entries()]
         .sort()
         .map(([territory, count]) => ({ territory, count })),
       population: [...population.entries()].sort().map(([territory, p]) => ({ territory, ...p })),
       captures: this.captures,
+      tiedClaims: this.tiedClaims,
+      assetsUsed: [...this.used].sort(),
       ammunitionUsed: [...this.ammunition.values()],
       magazinesUsed: magazines,
       detonations: this.detonations,

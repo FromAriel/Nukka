@@ -102,6 +102,22 @@ describe('ground combat', () => {
     );
   });
 
+  it('two players arriving level on a neutral territory tie and take nothing', () => {
+    const { ctx, state } = setup();
+    const input = assault(state, 'N-lakeshore', 3);
+    const b = stackOf(state, 'B', 'groundFormation');
+    b.location = 'B-heartland';
+    const result = autopilotResolver(ctx, state, {
+      ...input,
+      operations: [
+        ...input.operations,
+        { ...input.operations[0]!, id: 'op2', attacker: 'B', forces: [{ stack: b.id, count: 3 }] },
+      ],
+    });
+    expect(result.captures).toEqual([]);
+    expect(result.tiedClaims).toEqual([{ territory: 'N-lakeshore' }]);
+  });
+
   it('hills make defenders harder to dislodge than plains', () => {
     const { ctx, state } = setup();
     const plains = createCombat(ctx, state, assault(state, 'N-lakeshore', 2)).run();
@@ -112,10 +128,9 @@ describe('ground combat', () => {
 });
 
 describe('air and missile combat', () => {
-  function raid(ctx: MatchContext, state: GameState) {
+  function raid(ctx: MatchContext, state: GameState, farm = inst(state, 'B-heartland', 'farm')!) {
     state.players['A']!.stock['conventionalBombs'] = 4;
     const aircraft = stackOf(state, 'A', 'aircraft');
-    const farm = inst(state, 'B-heartland', 'farm')!;
     const input: CombatInput = {
       round: 1,
       kind: 'conventional',
@@ -144,6 +159,20 @@ describe('air and missile combat', () => {
     const { farm, result } = raid(ctx, state);
     expect(result.installationHits).toEqual([{ installation: farm.id, steps: 2 }]);
     expect(result.ammunitionUsed).toEqual([{ player: 'A', kind: 'conventionalBombs', count: 2 }]);
+  });
+
+  it('a hardened installation keeps the hits left over after a condition step', () => {
+    const { ctx, state } = setup();
+    for (const [id, i] of sortedEntries(state.installations))
+      if (i.owner === 'B' && i.kind === 'gunBattery') delete state.installations[id];
+    const farm = inst(state, 'B-heartland', 'farm')!;
+    const bunker = { ...farm, id: 'i-bunker', kind: 'command', hardHits: 1 };
+    state.installations[bunker.id] = bunker;
+    const { aircraft, result } = raid(ctx, state, bunker);
+    // 1 stored + 2 bombs at 2 hits per step: one step, one hit left over.
+    expect(result.installationHits).toEqual([{ installation: bunker.id, steps: 1 }]);
+    expect(result.hardHits).toEqual([{ installation: bunker.id, hits: 1 }]);
+    expect(result.assetsUsed).toEqual([aircraft.id]);
   });
 
   it('a gun battery covering the farm shoots the raid down or spends ammunition trying', () => {
