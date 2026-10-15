@@ -3,6 +3,9 @@
 Turn-based escalation strategy game. Design and planning docs live in `docs/planning/`; the
 Technical Architecture spec there is the source of truth for code structure.
 
+**Handoffs:** start every session by reading the newest file in `docs/handoffs/`; end it by writing
+a new one (procedure in `docs/handoffs/README.md`).
+
 ## Commands
 
 - `pnpm install` — install dependencies (pnpm workspaces, Node 22+)
