@@ -2,7 +2,7 @@
 
 Replaces the spying rules in `Tension_and_Diplomacy_Spec_v0_1.md` §6 and changes the Covert cards in `Base_Deck_v0_1.md`.
 
-All numbers are starting values for playtesting, not balance.
+**Status:** design locked for the first playtest. The numbers are starting values that playtests will tune.
 
 ## 1. The problem
 
@@ -184,6 +184,7 @@ The design doesn't stop players from reasoning about motive, and it shouldn't:
 | Shadow markers per round | One, or two with an intelligence bureau |
 | Where CI applies | The whole country |
 | Viable styles | Balanced, full spy and "the rock" are all supported by the numbers (§3.1) |
+| Intelligence economy | Locked for the first playtest: baseline +2 IP, command +1, up to 2 bureaus with hidden Foreign (+2 IP) or Domestic (+3 CI) mode, boosts up to +5, reserve cap 10 |
 
 ## 13. Later ideas (not in the base game)
 
