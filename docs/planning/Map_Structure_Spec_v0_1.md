@@ -4,6 +4,8 @@ Defines the base map's layout, territories, sea zones, neutral territories, when
 
 All numbers are starting values for playtesting, not balance.
 
+**Status:** this is the **test map**. It's deliberately symmetric so humans, bots and AI can be compared fairly with equal access to everything. Final gameplay maps will probably be more varied or randomized, and should use the same territory rules and data format.
+
 ## 1. Design goals
 
 - **Fair starts.** All four home countries are rotationally identical in shape, resources and access. Flavor can differ; the numbers don't.
@@ -45,7 +47,7 @@ Each player starts with a 2 × 2 home block in a corner:
 
 | Territory | Terrain | Starting population | Features | Starting installations | Coasts |
 |---|---|---|---|---|---|
-| **Capital** | Urban | 3 | Water source | Command, industry | Corner ocean zone |
+| **Capital** | Urban | 3 | Water source | Command, industry, power station | Corner ocean zone |
 | **Port** | Plains | 1 | — | Depot | Corner and side ocean zones |
 | **Uplands** | Hills | 1 | Ore | Industry | Corner and side ocean zones |
 | **Heartland** | Plains | 1 | Farmland, water source | Farm, waterworks | Inland sea |
