@@ -1,5 +1,6 @@
 #!/usr/bin/env -S npx tsx
-import { expandDeck, rulesetHash } from '@nukka/core';
+import { PASS_ORDERS, expandDeck, rulesetHash, startMatch, stateHash, submit } from '@nukka/core';
+import { standardMatch } from './fixtures.js';
 import { loadDeck, loadMap, loadRuleset } from './data.js';
 import { runSmoke } from './smoke.js';
 
@@ -15,6 +16,23 @@ if (args.includes('--smoke')) {
     `data ok: ruleset base-0.1 (${rulesetHash(ruleset)}), map ${map.id} ` +
       `(${map.territories.length} territories, ${map.seaZones.length} sea zones), ` +
       `deck ${deck.id} (${deck.cards.length} designs, ${expandDeck(deck).length} cards)`,
+  );
+  const { ctx, state: created } = standardMatch({ seed: 1 });
+  let state = startMatch(created);
+  while (state.phase !== 'ended') {
+    for (const decision of [...state.decisions]) {
+      const result = submit(ctx, state, {
+        matchId: state.meta.matchId,
+        playerId: decision.player,
+        seq: (state.lastSeq[decision.player] ?? 0) + 1,
+        cmd: { type: 'SubmitPlanning', orders: PASS_ORDERS },
+      });
+      if (!result.ok) throw new Error(`smoke match: ${result.problems.join('; ')}`);
+      state = result.state;
+    }
+  }
+  console.log(
+    `match ok: ${state.round} rounds, ${state.result?.reason}, scores ${JSON.stringify(state.result?.scores)}, hash ${stateHash(state)}`,
   );
 } else {
   console.error('nukka-sim: match running is not built yet. Use --smoke.');

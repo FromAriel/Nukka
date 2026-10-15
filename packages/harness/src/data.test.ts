@@ -65,7 +65,7 @@ describe('economy starting balance (Economy spec §6.1)', () => {
   const homeOf = (h: string) => map.territories.filter((t) => t.homeOf === h);
   const inst = ruleset.economy.installations;
 
-  it('produces +7 production, balanced food and water, and 1 spare power before defenses', () => {
+  it('produces +7 production, balanced food and water, and uses all power', () => {
     let production = 0;
     let food = 0;
     let water = 0;
@@ -91,10 +91,12 @@ describe('economy starting balance (Economy spec §6.1)', () => {
     expect(production).toBe(7);
     expect(food).toBe(population * ruleset.economy.populationDemand.food);
     expect(water).toBe(population * ruleset.economy.populationDemand.water);
-    // Command, 2 industry, waterworks = 4; radar + 2 gun batteries = 3 more.
-    const defenses =
-      inst['radar']!.powerDraw + 2 * ruleset.defenses.defenses['gunBattery']!.powerDraw;
-    expect(powerSupply - powerDraw - defenses).toBe(1);
+    // Command, 2 industry, waterworks = 4; the cold-start radar, airfield and 2 gun batteries = 4 more.
+    const military =
+      inst['radar']!.powerDraw +
+      inst['airfield']!.powerDraw +
+      2 * ruleset.defenses.defenses['gunBattery']!.powerDraw;
+    expect(powerSupply - powerDraw - military).toBe(0);
   });
 });
 

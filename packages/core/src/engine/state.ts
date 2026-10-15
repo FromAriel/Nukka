@@ -135,8 +135,68 @@ export interface GameState {
   /** Land borders whose supply links are cut: [a, b] sorted, until the given round. */
   disruptedLanes: { a: string; b: string; untilRound: number }[];
   rng: Record<string, number[]>;
+  /** Decisions the engine is waiting for (Technical Architecture spec §7.1). */
+  decisions: PendingDecision[];
+  /** Planning orders submitted this round, revealed together when all are in. */
+  planningOrders: Record<PlayerId, PlanningOrders>;
+  /** Last accepted command sequence number per player. */
+  lastSeq: Record<PlayerId, number>;
   result: MatchResult | null;
 }
+
+export type DecisionKind = 'planning';
+
+export interface PendingDecision {
+  player: PlayerId;
+  kind: DecisionKind;
+}
+
+// ------------------------------------------------------------ planning orders
+
+export type DevelopmentOrder =
+  | { type: 'build'; kind: string; territory: string; mode?: string }
+  | { type: 'upgrade'; installation: string }
+  | { type: 'repair'; installation: string }
+  | { type: 'recruit'; unit: string; location: string }
+  | { type: 'ammunition'; kind: string }
+  | { type: 'dismantle'; installation: string }
+  | { type: 'disband'; stack: string; count: number }
+  | { type: 'destroyAmmunition'; kind: string; count: number };
+
+export interface Reposition {
+  stack: string;
+  count: number;
+  to: string;
+}
+
+export interface LoadOrder {
+  installation: string;
+  ammunition: string;
+  count: number;
+}
+
+export type MainAction = { type: 'pass' };
+
+export interface PlanningOrders {
+  development: DevelopmentOrder[];
+  repositioning: Reposition | null;
+  /** Free: move stockpiled weapons into silos and launchers. */
+  loads: LoadOrder[];
+  /** Installation id → requested mode (takes effect next upkeep). */
+  modes: Record<string, string>;
+  /** IP set aside as counter-intelligence this round. */
+  counterIntel: number;
+  main: MainAction;
+}
+
+export const PASS_ORDERS: PlanningOrders = {
+  development: [],
+  repositioning: null,
+  loads: [],
+  modes: {},
+  counterIntel: 0,
+  main: { type: 'pass' },
+};
 
 export function pairKey(a: PlayerId, b: PlayerId): string {
   return a < b ? `${a}|${b}` : `${b}|${a}`;

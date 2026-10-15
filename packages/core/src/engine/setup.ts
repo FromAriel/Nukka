@@ -62,6 +62,9 @@ export function createMatch(config: MatchConfig): { ctx: MatchContext; state: Ga
     lastCombat: 'none',
     disruptedLanes: [],
     rng: {},
+    decisions: [],
+    planningOrders: {},
+    lastSeq: {},
     result: null,
   };
 
