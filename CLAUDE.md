@@ -31,6 +31,11 @@ GitHub Actions bills a minimum of one minute per job, so CI runs as a single job
 non-draft pull requests and pushes to `main` (not on branch pushes, not for docs-only changes).
 Don't add workflows or split jobs without a good reason; run checks locally instead.
 
+Using Actions is fine (budget: 3,000 minutes a month), as long as it's efficient. Every job is
+rounded up to whole minutes, so batch work into one job running one script, never many small
+jobs or runs. Avoid triggering CI twice for the same change (e.g. opening a PR and then pushing
+to `main` right away).
+
 ## Packages
 
 - `packages/core` — rules engine (no dependencies on other packages)
